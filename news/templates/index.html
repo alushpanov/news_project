@@ -4,7 +4,7 @@
     <title>News</title>
 </head>
 <body>
-    {% for article in articles %}
+    {% for article in article_list %}
         <p>{{ article.title }}</p>
         <small>{{ article.author }}</small>
         {{ article.created_on }}<br>

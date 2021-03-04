@@ -1,7 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.views import generic
+
 from news.models import Article
 
-def index(request):
-    articles = Article.objects.all().order_by('-created_on')
-    return render(request, 'index.html', {'articles': articles})
+
+class IndexView(generic.ListView):
+    template_name = 'index.html'
+
+    def get_queryset(self):
+        return Article.objects.all().order_by('-created_on')
