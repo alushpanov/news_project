@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>News</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block index_content %}
     {% for article in article_list %}
         <p>{{ article.title }}</p>
         <small>{{ article.author }}</small>
         {{ article.created_on }}<br>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
