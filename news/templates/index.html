@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News</title>
+</head>
+<body>
+    {% for article in articles %}
+        <p>{{ article.title }}</p>
+        <small>{{ article.author }}</small>
+        {{ article.created_on }}<br>
+    {% endfor %}
+</body>
+</html>
