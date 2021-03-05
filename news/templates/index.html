@@ -15,7 +15,7 @@
     {% for article in article_list %}
         <hr>
         <div class="article">
-            <h2>{{ article.title }}</h2>
+            <a href="{% url 'news:detail' article.id %}"><h2>{{ article.title }}</h2></a>
             <small>
             Author: {{ article.author }}<br>
             Published: {{ article.created_on }}
