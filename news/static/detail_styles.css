@@ -1,0 +1,23 @@
+body {
+  background: rgba(249, 251, 252, .4);
+  font-family: Poppins;
+}
+
+header a {
+    text-decoration: none;
+    color: crimson;
+}
+
+header h1 {
+    text-align: center;
+}
+
+.article_text {
+    width: 50%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    text-align: justify;
+}
+header i {
+    text-align: center;
+}

@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'detail_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins"/>
+    <title>{{ article.title }}</title>
+</head>
+<body>
+<header>
+    <a href="{% url 'news:index' %}">Other news</a>
+    <h1>{{ article.title }}</h1>
+    <i>
+        Author: {{ article.author }}<br>
+        Published: {{ article.created_on }}
+    </i>
+</header>
+
+<div class="article_text">
+    {{ article.article_text }}
+</div>
+</body>
+</html>
