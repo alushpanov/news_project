@@ -3,5 +3,5 @@ from news import views
 
 app_name = 'news'
 urlpatterns = [
-    
+
 ]
