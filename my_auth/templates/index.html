@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block index_content %}
+{% if user.is_authenticated %}
+    <p>Welcome to the index page.</p>
+    <a href="{% url 'logout' %}">logout</a>
+  {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+{% endif %}
+{% endblock %}
