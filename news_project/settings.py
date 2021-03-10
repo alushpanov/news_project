@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'my_auth.apps.MyAuthConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'django.contrib.sites',
 ]
 
 MIDDLEWARE = [
@@ -122,13 +127,24 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'my_auth.MyUser'
 
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-#     # 'social_core.backends.open_id.OpenIdAuth',
-#     # 'social_core.backends.google.GoogleOpenId',
-#     # 'social_core.backends.google.GoogleOAuth2',
-#     # 'social_core.backends.google.GoogleOAuth',
-#     # 'social_core.backends.twitter.TwitterOAuth',
-#     # 'social_core.backends.facebook.FacebookOAuth2',
-#     # 'social_core.backends.github.GithubOAuth2',
-# ]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SITE_ID = 2
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
