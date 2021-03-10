@@ -2,13 +2,26 @@
 <html lang="en">
 <head>
   <style>
+      a {
+          color: blue;
+          text-decoration: none;
+      }
   </style>
 </head>
 <body>
+<header>
+    {% if user.is_authenticated %}
+        <p>You are logged as {{ user.email }}</p>
+    {% endif %}
+</header>
+
 {% block login %}
 {% endblock %}
 
 {% block index_content %}
+{% endblock %}
+
+{% block register %}
 {% endblock %}
 
 </body>

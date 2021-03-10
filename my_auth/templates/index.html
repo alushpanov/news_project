@@ -3,8 +3,9 @@
 {% block index_content %}
 {% if user.is_authenticated %}
     <p>Welcome to the index page.</p>
-    <a href="{% url 'logout' %}">logout</a>
+    <a href="{% url 'my_auth:logout' %}">logout</a>
   {% else %}
-    <p>Please <a href="{% url 'login' %}">login</a> to see this page.</p>
+    <p>Please <a href="{% url 'my_auth:login' %}">login</a> to see this page.</p>
+    <p>Don't have an account yet? <a href="{% url 'my_auth:register' %}">Register here!</a></p>
 {% endif %}
 {% endblock %}
