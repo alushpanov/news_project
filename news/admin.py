@@ -1,5 +1,4 @@
 from django.contrib import admin
-from news.models import Author, Article
+from news.models import Article
 
-admin.site.register(Author)
 admin.site.register(Article)
