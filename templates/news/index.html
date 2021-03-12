@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block index_content %}
 <div class="article_list">
@@ -9,6 +10,9 @@
             <p class="article_text">
                 {{ article.article_text }}
             </p>
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="some image"/>
+            {% endif %}
             <i>
             Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
             Published: {{ article.created_on }}
