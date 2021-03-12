@@ -13,6 +13,7 @@
             {% if article.image %}
                 <img src="{{ article.image.url }}" alt="some image"/>
             {% endif %}
+            <br>
             <i>
             Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
             Published: {{ article.created_on }}
