@@ -16,10 +16,10 @@ class Article(models.Model):
     article_text = models.TextField()
     created_on = models.DateField()  # auto_now_add=True
     last_modified = models.DateField(auto_now=True)
-    image = models.ImageField('', null=True)
+    image = models.ImageField('', null=True, blank=True)
     # author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category, related_name='articles')
+    categories = models.ManyToManyField(Category, related_name='articles', blank=True)
 
     def __str__(self):
         return self.title
