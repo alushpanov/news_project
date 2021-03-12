@@ -16,7 +16,12 @@
             <br>
             <i>
             Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
-            Published: {{ article.created_on }}
+            Published: {{ article.created_on }}<br>
+            Last modified: {{ article.last_modified }}<br>
+            Categories:
+            {% for category in article.categories.all %}
+                {{ category }};
+            {% endfor %}
             </i>
         </div>
     {% endfor %}
