@@ -9,3 +9,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         return Article.objects.all().order_by('-created_on')
+
+
+def create(request):
+    return render(request, 'news/create.html', {})
