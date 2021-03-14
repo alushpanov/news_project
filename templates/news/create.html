@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
 {% block create %}
-<h1>Creation page</h1>
+<form action="/create/" method="post">
+    {% csrf_token %}
+    <label for="title">Title: </label>
+    {{ form.title }}
+    <br>
+    <label for="article_text">Article text: </label>
+    {{ form.article_text }}
+    <br>
+    {{ form.categories }}
+    <br>
+    {{ form.image }}
+    <button type="submit">Submit</button>
+</form>
 {% endblock %}
