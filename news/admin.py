@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from news.models import Article, Category
 
 
-class MyArticleAdminForm(forms.ModelForm):
+class ArticleAdminForm(forms.ModelForm):
     def clean_categories(self):
         data = self.cleaned_data['categories']
         if len(data) > 3:
@@ -13,9 +13,11 @@ class MyArticleAdminForm(forms.ModelForm):
         return data
 
 
+@admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    form = MyArticleAdminForm
+    form = ArticleAdminForm
 
 
-admin.site.register(Article, ArticleAdmin)
-admin.site.register(Category)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    pass
