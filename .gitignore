@@ -1,6 +1,2 @@
 .idea/*
-news_project/__pycache__/*
-news/__pycache__/*
-news/migrations/__pycache__/*
-my_auth/__pycache__/
-my_auth/migrations/__pycache__/
+*.pyc
