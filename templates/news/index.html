@@ -8,7 +8,7 @@
         <div class="article">
             <h2>{{ article.title }}</h2>
             <p class="article_text">
-                {{ article.article_text }}
+                {{ article.text }}
             </p>
             {% if article.image %}
                 <img src="{{ article.image.url }}" alt="some image"/>
@@ -16,7 +16,7 @@
             <br>
             <i>
             Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
-            Published: {{ article.created_on }}<br>
+            Published: {{ article.created_at }}<br>
             Last modified: {{ article.last_modified }}<br>
             {% for category in article.categories.all %}
                 {{ category }};

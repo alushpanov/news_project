@@ -8,4 +8,4 @@ class IndexView(generic.ListView):
     template_name = 'news/index.html'
 
     def get_queryset(self):
-        return Article.objects.all().order_by('-created_on')
+        return Article.objects.all().order_by('-created_at')
