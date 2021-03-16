@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block index_content %}
+{% if user.is_authenticated %}
+    <p>Welcome to the index page.</p>
+    <a href="{% url 'my_auth:logout' %}">logout</a>
+  {% else %}
+    <p>Please <a href="{% url 'my_auth:login' %}">login</a> to see this page.</p>
+    <p>You can also <a href="{% provider_login_url 'google' %}">login with Google</a>!</p>
+    <p>Don't have an account yet? <a href="{% url 'my_auth:register' %}">Register here!</a></p>
+{% endif %}
+{% endblock %}
