@@ -14,7 +14,7 @@ class Article(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
-    image = models.ImageField('', null=True, blank=True)
+    image = models.ImageField(upload_to='', null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
 

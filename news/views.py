@@ -1,4 +1,3 @@
-from datetime import date
 from django.shortcuts import redirect, render
 from django.views import generic
 
@@ -16,13 +15,12 @@ class IndexView(generic.ListView):
 def create(request):
     form = ArticleForm()
     if request.POST:
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
             article = Article.objects.create(
                 title=form.cleaned_data.get('title'),
                 text=form.cleaned_data.get('text'),
                 image=form.cleaned_data.get('image'),
-                created_at=date.today(),
                 author=request.user
             )
             categories = form.cleaned_data.get('categories')

@@ -1,20 +1,9 @@
 {% extends "base.html" %}
 
 {% block create %}
-<form action="/create/" method="post">
+<form enctype="multipart/form-data" action="/create/" method="post">
     {% csrf_token %}
-    <label for="title">Title: </label>
-    {{ form.title }}
-    <br>
-    <label for="article_text">Article text: </label>
-    {{ form.text }}
-    <br>
-    {{ form.categories }}
-    {% if form.categories.errors %}
-        {{ form.errors }}
-    {% endif %}
-    <br>
-    {{ form.image }}
+    {{ form.as_p }}
     <button type="submit">Submit</button>
 </form>
 {% endblock %}

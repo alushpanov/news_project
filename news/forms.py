@@ -21,7 +21,8 @@ class ArticleForm(forms.Form):
         required=False
     )
     image = forms.ImageField(
-        required=False
+        required=False,
+        widget=forms.FileInput()
     )
 
     def clean_categories(self):
