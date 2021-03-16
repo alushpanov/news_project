@@ -6,7 +6,10 @@ from my_auth.models import MyUser
 
 
 def index_view(request):
-    return render(request, 'index.html', {})
+    if request.user.is_authenticated:
+        return render(request, 'index.html', {})
+    else:
+        return redirect('my_auth:login')
 
 
 def my_login(request):
@@ -32,7 +35,7 @@ def my_login(request):
 
 def my_logout(request):
     logout(request)
-    return redirect('my_auth:index')
+    return redirect('my_auth:login')
 
 
 def register(request):
