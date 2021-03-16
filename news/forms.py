@@ -10,7 +10,7 @@ class ArticleForm(forms.Form):
             "placeholder": "Title"
         })
     )
-    article_text = forms.CharField(
+    text = forms.CharField(
         widget=forms.Textarea(attrs={
             "placeholder": "Article content"
         })

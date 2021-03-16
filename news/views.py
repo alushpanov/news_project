@@ -20,7 +20,7 @@ def create(request):
         if form.is_valid():
             article = Article.objects.create(
                 title=form.cleaned_data.get('title'),
-                article_text=form.cleaned_data.get('article_text'),
+                text=form.cleaned_data.get('text'),
                 # categories=form.cleaned_data.get('categories'),
                 image=form.cleaned_data.get('image'),
                 created_at=date.today(),
