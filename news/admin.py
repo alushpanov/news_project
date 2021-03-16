@@ -7,7 +7,7 @@ from news.models import Article, Category
 
 class ArticleAdminForm(forms.ModelForm):
     def clean_categories(self):
-        data = self.cleaned_data['categories']
+        data = self.cleaned_data.get('categories')
         if len(data) > 3:
             raise ValidationError('No more than 3 categories allowed!')
         return data

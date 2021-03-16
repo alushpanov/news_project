@@ -21,17 +21,12 @@ def create(request):
             article = Article.objects.create(
                 title=form.cleaned_data.get('title'),
                 text=form.cleaned_data.get('text'),
-                # categories=form.cleaned_data.get('categories'),
                 image=form.cleaned_data.get('image'),
                 created_at=date.today(),
                 author=request.user
             )
-            # article.save()
-            # article.categories.add(form.cleaned_data.get('categories'))
-            # article.categories.add('test')
+            categories = form.cleaned_data.get('categories')
+            article.categories.set(categories)
             article.save()
             return redirect('news:index')
-    context = {
-        'form': form
-    }
-    return render(request, 'news/create.html', context)
+    return render(request, 'news/create.html', {'form': form})

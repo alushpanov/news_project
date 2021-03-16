@@ -10,6 +10,9 @@
     {{ form.text }}
     <br>
     {{ form.categories }}
+    {% if form.categories.errors %}
+        {{ form.errors }}
+    {% endif %}
     <br>
     {{ form.image }}
     <button type="submit">Submit</button>
