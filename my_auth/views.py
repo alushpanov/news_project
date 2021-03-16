@@ -54,7 +54,7 @@ def register(request):
             else:
                 user = MyUser.objects.create_user(email=email, password=password)
                 user.save()
-                login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('my_auth:index')
     else:
         return render(request, 'register.html', {'form': form})
