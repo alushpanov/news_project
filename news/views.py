@@ -22,11 +22,13 @@ def create(request):
                 title=form.cleaned_data.get('title'),
                 article_text=form.cleaned_data.get('article_text'),
                 # categories=form.cleaned_data.get('categories'),
-                # image=form.cleaned_data.get('image'),
+                image=form.cleaned_data.get('image'),
                 created_on=date.today(),
                 author=request.user
             )
+            # article.save()
             # article.categories.add(form.cleaned_data.get('categories'))
+            # article.categories.add('test')
             article.save()
             return redirect('news:index')
     context = {
