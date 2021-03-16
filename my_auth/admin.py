@@ -30,5 +30,4 @@ class MyUserAdmin(UserAdmin):
     )
 
     list_display = ('email', 'is_staff')
-
     ordering = ('email',)
