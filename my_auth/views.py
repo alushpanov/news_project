@@ -5,13 +5,6 @@ from my_auth.forms import MyLoginForm
 from my_auth.models import MyUser
 
 
-def index_view(request):
-    if request.user.is_authenticated:
-        return render(request, 'index.html', {})
-    else:
-        return redirect('my_auth:login')
-
-
 def my_login(request):
     form = MyLoginForm()
     if request.POST:
@@ -23,14 +16,14 @@ def my_login(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('my_auth:index')
+                return redirect('news:index')
             else:
-                return render(request, 'login.html', {
+                return render(request, 'my_auth/login.html', {
                     'form': form,
                     'msg': 'Login failed! Try again'
                 })
     else:
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'my_auth/login.html', {'form': form})
 
 
 def my_logout(request):
@@ -47,7 +40,7 @@ def register(request):
             password = form.cleaned_data.get('password')
 
             if MyUser.objects.filter(email=email).exists():
-                return render(request, 'register.html', {
+                return render(request, 'my_auth/register.html', {
                     'form': form,
                     'msg': 'User with such email is already registered!'
                 })
@@ -57,4 +50,4 @@ def register(request):
                 login(request, user)
                 return redirect('my_auth:index')
     else:
-        return render(request, 'register.html', {'form': form})
+        return render(request, 'my_auth/register.html', {'form': form})

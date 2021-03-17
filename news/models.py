@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from my_auth.models import MyUser
 
 
 class Category(models.Model):
@@ -15,7 +15,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     image = models.ImageField('', null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
 
     def __str__(self):
