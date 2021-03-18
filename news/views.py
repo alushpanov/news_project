@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.views import generic
 
+from news.forms.article import ArticleForm
 from news.models import Article
-from news.forms import ArticleForm
 
 
 class IndexView(generic.ListView):
@@ -17,14 +17,10 @@ def create(request):
     if request.POST:
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            article = Article.objects.create(
-                title=form.cleaned_data.get('title'),
-                text=form.cleaned_data.get('text'),
-                image=form.cleaned_data.get('image'),
-                author=request.user
-            )
-            categories = form.cleaned_data.get('categories')
-            article.categories.set(categories)
+            categories = form.cleaned_data.pop('categories')
+            article = form.save(commit=False)
+            article.author = request.user
             article.save()
+            article.categories.set(categories)
             return redirect('news:index')
     return render(request, 'news/create.html', {'form': form})
