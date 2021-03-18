@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="{% static 'base_styles.css' %}">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins"/>
@@ -8,13 +8,20 @@
 </head>
 <body>
 <header>
-    {{ user }} <br>
     {% if user.is_authenticated %}
-        <a href="">Logout</a> <br>
-        <a href="{% url 'news:create'%}">Create news</a>
+        <p>You are logged as {{ user.email }}</p> <br>
+        <a href="{% url 'news:create'%}">Create news</a> <br>
+        <a href="{% url 'my_auth:logout' %}">Logout</a>
     {% endif %}
 </header>
+
 {% block index_content %}
+{% endblock %}
+
+{% block login %}
+{% endblock %}
+
+{% block register %}
 {% endblock %}
 
 {% block create %}
