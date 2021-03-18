@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -151,6 +156,11 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        },
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_SECRET'),
+            'key': ''
         }
     }
 }
