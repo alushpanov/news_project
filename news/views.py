@@ -11,6 +11,3 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         return Article.objects.all().order_by('-created_at')
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
