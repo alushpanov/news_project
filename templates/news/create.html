@@ -3,7 +3,25 @@
 {% block create %}
 <form enctype="multipart/form-data" action="/create/" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>
+        <label for="title">Title: </label>
+        {{ form.title }}
+    </p>
+    <p>
+        <label for="text">Text: </label>
+        {{ form.text }}
+    </p>
+    <p>
+        {% if form.categories.errors %}
+            {{ form.categories.errors }}
+        {% endif %}
+        <label for="categories">Categories: </label>
+        {{ form.categories }}
+    </p>
+    <p>
+        <label for="image">Image: </label>
+        {{ form.image }}
+    </p>
     <button type="submit">Submit</button>
 </form>
 {% endblock %}
