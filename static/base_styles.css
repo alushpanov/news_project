@@ -1,0 +1,43 @@
+body {
+  background: rgba(249, 251, 252, .4);
+  font-family: Poppins;
+}
+
+.article_list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.article_list .article {
+  margin-top: -10px;
+}
+
+.article_list hr {
+  width: 100%;
+}
+
+.article h2 {
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.article_text {
+    width: 70%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    text-align: justify;
+}
+
+.article img {
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+}
