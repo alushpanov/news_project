@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from news.storage import path_file_name
+from news.storage import article_image_path
 
 
 class Category(models.Model):
@@ -17,7 +17,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=path_file_name, null=True, blank=True)
+    image = models.ImageField(upload_to=article_image_path, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
 
     def __str__(self):

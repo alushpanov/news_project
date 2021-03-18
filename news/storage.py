@@ -1,2 +1,2 @@
-def path_file_name(instance, filename):
+def article_image_path(instance, filename):
     return 'articles/user_{0}/{1}'.format(instance.author.uuid, filename)
