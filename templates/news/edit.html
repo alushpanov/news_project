@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block edit %}
+<form enctype="multipart/form-data" action="/mynews/{{ form.instance.pk }}/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

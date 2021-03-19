@@ -21,7 +21,8 @@
                 {{ category }};
             {% empty %}
                 No categories provided.
-            {% endfor %}
+            {% endfor %} <br>
+            <a href="{% url 'news:edit' article.pk %}">Edit</a>
             </i>
         </div>
     {% endfor %}
