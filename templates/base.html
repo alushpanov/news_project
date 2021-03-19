@@ -10,6 +10,7 @@
 <header>
     {% if user.is_authenticated %}
         <p>You are logged as {{ user.email }}</p> <br>
+        <a href="{% url 'news:create'%}">Create news</a> <br>
         <a href="{% url 'my_auth:logout' %}">Logout</a>
     {% endif %}
 </header>
@@ -21,6 +22,9 @@
 {% endblock %}
 
 {% block register %}
+{% endblock %}
+
+{% block create %}
 {% endblock %}
 
 </body>

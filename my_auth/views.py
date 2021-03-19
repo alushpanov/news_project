@@ -48,6 +48,6 @@ def register(request):
                 user = MyUser.objects.create_user(email=email, password=password)
                 user.save()
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('my_auth:index')
+                return redirect('news:index')
     else:
         return render(request, 'my_auth/register.html', {'form': form})
