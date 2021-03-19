@@ -27,3 +27,10 @@ def create(request):
             article.categories.set(categories)
             return redirect('news:index')
     return render(request, 'news/create.html', {'form': form})
+
+
+class MyNewsView(generic.ListView):
+    template_name = 'news/my.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(author_id=self.request.user.id)
