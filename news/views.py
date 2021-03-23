@@ -44,3 +44,10 @@ def edit(request, pk):  # turn to class view
             form.save()
             return redirect('news:my_news')
     return render(request, 'news/edit.html', {'form': form})
+
+
+def archive(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    article.archived = True
+    article.save()
+    return redirect('news:my_news')
