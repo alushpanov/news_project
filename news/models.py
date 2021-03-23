@@ -11,6 +11,11 @@ class Category(models.Model):
         return self.name
 
 
+class ArticleManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(archived=False)
+
+
 class Article(models.Model):
     title = models.CharField(max_length=100)
     text = models.TextField()
@@ -19,6 +24,10 @@ class Article(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=article_image_path, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
+    archived = models.BooleanField(default=False)
+
+    objects = ArticleManager()
+    all_articles = models.Manager()
 
     def __str__(self):
         return self.title
