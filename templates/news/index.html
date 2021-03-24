@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block index_content %}
 <div class="article_list">
@@ -14,7 +13,7 @@
                 <img src="{{ article.image.url }}" alt="some image"/>
             {% endif %}
             <br>
-            <i>
+            <div class="info">
             Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
             Published: {{ article.created_at }}<br>
             Last modified: {{ article.last_modified }}<br>
@@ -23,7 +22,7 @@
             {% empty %}
                 No categories provided.
             {% endfor %}
-            </i>
+            </div>
         </div>
     {% endfor %}
 </div>

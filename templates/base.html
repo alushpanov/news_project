@@ -1,19 +1,24 @@
+{% load bootstrap4 %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="{% static 'base_styles.css' %}">
+    {% bootstrap_css %}
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins"/>
+    <link rel="stylesheet" href="{% static 'base_styles.css' %}">
     <title>News</title>
 </head>
 <body>
 <header>
     {% if user.is_authenticated %}
-        <p>You are logged as {{ user.email }}</p> <br>
-        <a href="{% url 'news:index'%}">All news</a> <br>
-        <a href="{% url 'news:my_news'%}">My news</a> <br>
-        <a href="{% url 'news:create'%}">Create news</a> <br>
-        <a href="{% url 'my_auth:logout' %}">Logout</a>
+    <p>You are logged as {{ user.email }}</p>
+    <nav class="nav">
+        <a class="nav-link" href="{% url 'news:index'%}">All news</a>
+        <a class="nav-link" href="{% url 'news:my_news'%}">My news</a>
+        <a class="nav-link" href="{% url 'news:create'%}">Create news</a>
+        <a class="nav-link" href="{% url 'my_auth:logout' %}">Logout</a>
+    </nav>
     {% endif %}
 </header>
 
