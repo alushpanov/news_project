@@ -42,19 +42,13 @@ def register(request):
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
 
-            if MyUser.objects.filter(email=email).exists():
-                return render(request, 'my_auth/register.html', {
-                    'form': form,
-                    'msg': 'User with such email is already registered!'
-                })
-            else:
-                user = MyUser.objects.create_user(
-                    email=email,
-                    password=password,
-                    first_name=first_name,
-                    last_name=last_name
-                )
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('news:index')
-    else:
-        return render(request, 'my_auth/register.html', {'form': form})
+            user = MyUser.objects.create_user(
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect('news:index')
+
+    return render(request, 'my_auth/register.html', {'form': form})

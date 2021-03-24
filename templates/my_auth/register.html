@@ -7,9 +7,6 @@
 {% csrf_token %}
 
 {% bootstrap_form form %}
-{% if msg %}
-    {% bootstrap_alert msg alert_type='error' %}
-{% endif %}
 
 {% buttons %}
     <button type="submit" class="btn btn-primary">Register</button>
