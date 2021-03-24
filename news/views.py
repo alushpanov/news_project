@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
@@ -36,14 +36,13 @@ class MyNewsView(generic.ListView):
         return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
-def edit(request, pk):  # turn to class view
-    article = get_object_or_404(Article, pk=pk)
-    form = ArticleForm(request.POST or None, request.FILES or None, instance=article)
-    if request.POST:
-        if form.is_valid():
-            form.save()
-            return redirect('news:my_news')
-    return render(request, 'news/edit.html', {'form': form})
+class ArticleUpdate(generic.UpdateView):
+    model = Article
+    template_name = 'news/edit.html'
+    form_class = ArticleForm
+
+    def get_success_url(self):
+        return reverse('news:my_news')
 
 
 def archive(request, pk):
