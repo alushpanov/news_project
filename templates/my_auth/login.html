@@ -5,7 +5,10 @@
 {% block login %}
 
 {% if msg %}
-    <p>{{ msg }}</p>
+    <div class="alert alert-danger alert-dismissible">
+    <button class="close" type="button" data-dismiss="alert" aria-label="close">×</button>
+        {{ msg }}
+    </div>
 {% endif %}
 
 <form method="post" action="{% url 'my_auth:login' %}" class="form">
