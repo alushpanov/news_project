@@ -33,7 +33,7 @@ class MyNewsView(generic.ListView):
     template_name = 'news/user.html'
 
     def get_queryset(self):
-        return Article.objects.filter(author_id=self.request.user.id)
+        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
 def edit(request, pk):  # turn to class view
