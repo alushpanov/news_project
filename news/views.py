@@ -45,7 +45,7 @@ class ArticleUpdate(generic.UpdateView):
         return reverse('news:user_news')
 
 
-def archive(request, pk):
+def archive_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     article.archived = True
     article.save()
