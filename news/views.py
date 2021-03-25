@@ -22,7 +22,7 @@ class UserArticleListView(generic.ListView):
         return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
-def create(request):
+def create_article(request):
     form = ArticleForm()
     if request.POST:
         form = ArticleForm(request.POST, request.FILES)
@@ -50,6 +50,3 @@ def archive_article(request, pk):
     article.archived = True
     article.save()
     return redirect('news:user_articles')
-
-# COMBINE CLASS VIEWS INTO ONE
-# TemplateView?
