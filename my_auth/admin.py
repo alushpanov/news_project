@@ -6,7 +6,7 @@ from my_auth.models import MyUser
 
 
 @admin.register(MyUser)
-class CustomUserAdmin(DjangoUserAdmin):
+class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (None, {
             'fields': ('email', 'password')
