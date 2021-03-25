@@ -27,7 +27,7 @@ class Article(models.Model):
     archived = models.BooleanField(default=False)
 
     objects = ArticleManager()
-    all_articles = models.Manager()
+    all_objects = models.Manager()
 
     def __str__(self):
         return self.title
