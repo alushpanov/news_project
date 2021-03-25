@@ -8,7 +8,7 @@ from news.models import Article
 
 
 @method_decorator(login_required, name='dispatch')
-class IndexView(generic.ListView):
+class IndexView(generic.ListView):  # IndexListView?
     template_name = 'news/index.html'
 
     def get_queryset(self):
@@ -26,19 +26,19 @@ def create(request):
             article.save()
             article.categories.set(categories)
             return redirect('news:index')
-    return render(request, 'news/create.html', {'form': form})
+    return render(request, 'news/create_article.html', {'form': form})
 
 
-class MyNewsView(generic.ListView):
+class UserNewsListView(generic.ListView):
     template_name = 'news/user.html'
 
     def get_queryset(self):
         return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
-class ArticleUpdate(generic.UpdateView):
+class ArticleUpdateView(generic.UpdateView):
     model = Article
-    template_name = 'news/edit.html'
+    template_name = 'news/update_article.html'
     form_class = ArticleForm
 
     def get_success_url(self):

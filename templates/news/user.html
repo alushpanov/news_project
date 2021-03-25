@@ -22,7 +22,7 @@
             {% empty %}
                 No categories provided.
             {% endfor %} <br>
-            <a href="{% url 'news:edit' article.pk %}">Edit</a>
+            <a href="{% url 'news:update_article' article.pk %}">Edit</a>
             <form action="{% url 'news:archive_article' article.pk %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Delete this article">
