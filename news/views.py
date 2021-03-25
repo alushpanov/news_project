@@ -42,11 +42,14 @@ class ArticleUpdate(generic.UpdateView):
     form_class = ArticleForm
 
     def get_success_url(self):
-        return reverse('news:my_news')
+        return reverse('news:user_news')
 
 
 def archive(request, pk):
     article = get_object_or_404(Article, pk=pk)
     article.archived = True
     article.save()
-    return redirect('news:my_news')
+    return redirect('news:user_news')
+
+# COMBINE CLASS VIEWS INTO ONE
+# TemplateView?

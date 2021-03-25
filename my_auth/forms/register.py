@@ -1,9 +1,9 @@
 from django import forms
 
-from my_auth.forms.login import MyLoginForm
+from my_auth.forms.login import LoginForm
 
 
-class MyRegisterForm(MyLoginForm):
+class RegisterForm(LoginForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
 
