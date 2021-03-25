@@ -19,6 +19,8 @@ class Article(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=article_image_path, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
+    likes = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
