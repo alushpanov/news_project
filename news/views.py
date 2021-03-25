@@ -30,7 +30,7 @@ def create(request):
 
 
 class UserNewsListView(generic.ListView):
-    template_name = 'news/user.html'
+    template_name = 'news/user_articles.html'
 
     def get_queryset(self):
         return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
@@ -42,14 +42,14 @@ class ArticleUpdateView(generic.UpdateView):
     form_class = ArticleForm
 
     def get_success_url(self):
-        return reverse('news:user_news')
+        return reverse('news:user_articles')
 
 
 def archive_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     article.archived = True
     article.save()
-    return redirect('news:user_news')
+    return redirect('news:user_articles')
 
 # COMBINE CLASS VIEWS INTO ONE
 # TemplateView?
