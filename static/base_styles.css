@@ -45,3 +45,9 @@ body {
     margin-left: 50%;
     transform: translateX(-50%);
 }
+
+.comment_list {
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-top: 50px;
+}
