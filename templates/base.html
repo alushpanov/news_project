@@ -15,8 +15,8 @@
     <p>You are logged as {{ user.email }}</p>
     <nav class="nav">
         <a class="nav-link" href="{% url 'news:index'%}">All news</a>
-        <a class="nav-link" href="{% url 'news:my_news'%}">My news</a>
-        <a class="nav-link" href="{% url 'news:create'%}">Create news</a>
+        <a class="nav-link" href="{% url 'news:user_articles'%}">My news</a>
+        <a class="nav-link" href="{% url 'news:create_article'%}">Create news</a>
         <a class="nav-link" href="{% url 'my_auth:logout' %}">Logout</a>
     </nav>
     {% endif %}

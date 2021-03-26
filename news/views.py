@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
@@ -15,7 +15,14 @@ class IndexView(generic.ListView):
         return Article.objects.all().order_by('-created_at')
 
 
-def create(request):
+class UserArticleListView(generic.ListView):
+    template_name = 'news/user_articles.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
+
+
+def create_article(request):
     form = ArticleForm()
     if request.POST:
         form = ArticleForm(request.POST, request.FILES)
@@ -26,28 +33,20 @@ def create(request):
             article.save()
             article.categories.set(categories)
             return redirect('news:index')
-    return render(request, 'news/create.html', {'form': form})
+    return render(request, 'news/create_article.html', {'form': form})
 
 
-class MyNewsView(generic.ListView):
-    template_name = 'news/user.html'
+class ArticleUpdateView(generic.UpdateView):
+    model = Article
+    template_name = 'news/update_article.html'
+    form_class = ArticleForm
 
-    def get_queryset(self):
-        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
-
-
-def edit(request, pk):  # turn to class view
-    article = get_object_or_404(Article, pk=pk)
-    form = ArticleForm(request.POST or None, request.FILES or None, instance=article)
-    if request.POST:
-        if form.is_valid():
-            form.save()
-            return redirect('news:my_news')
-    return render(request, 'news/edit.html', {'form': form})
+    def get_success_url(self):
+        return reverse('news:user_articles')
 
 
-def archive(request, pk):
+def archive_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
     article.archived = True
     article.save()
-    return redirect('news:my_news')
+    return redirect('news:user_articles')
