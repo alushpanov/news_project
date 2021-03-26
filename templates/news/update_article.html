@@ -1,9 +1,12 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
 
 {% block edit %}
-<form enctype="multipart/form-data" action="/mynews/{{ form.instance.pk }}/" method="post">
+<form enctype="multipart/form-data" action="/mynews/{{ form.instance.pk }}/" method="post" class="form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Save</button>
+    {% endbuttons %}
 </form>
 {% endblock %}

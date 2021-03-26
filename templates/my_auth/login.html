@@ -1,29 +1,24 @@
 {% extends "base.html" %}
 {% load socialaccount %}
+{% load bootstrap4 %}
 
 {% block login %}
 
 {% if msg %}
-    <p>{{ msg }}</p>
+    <div class="alert alert-danger alert-dismissible">
+    <button class="close" type="button" data-dismiss="alert" aria-label="close">×</button>
+        {{ msg }}
+    </div>
 {% endif %}
 
-<form method="post" action="{% url 'my_auth:login' %}">
+<form method="post" action="{% url 'my_auth:login' %}" class="form">
 {% csrf_token %}
-<table>
-    <tr>
-        <td>{{ form.email.label_tag }}</td>
-        <td>{{ form.email }}</td>
-    </tr>
-    <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-    </tr>
-</table>
-
-<input type="submit" value="login" />
+{% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">login</button>
+    {% endbuttons %}
+    <p>You can also <a href="{% provider_login_url 'google' %}">login with Google</a>!</p>
+    <p>Don't have an account yet? <a href="{% url 'my_auth:register' %}">Register here</a>!</p>
 </form>
-
-<p>You can also <a href="{% provider_login_url 'google' %}">login with Google</a>!</p>
-<p>Don't have an account yet? <a href="{% url 'my_auth:register' %}">Register here</a>!</p>
 
 {% endblock %}

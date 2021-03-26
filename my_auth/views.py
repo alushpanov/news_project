@@ -21,10 +21,10 @@ def login(request):
             else:
                 return render(request, 'my_auth/login.html', {
                     'form': form,
-                    'msg': 'Login failed! Try again'
+                    'msg': 'Login failed!'
                 })
-    else:
-        return render(request, 'my_auth/login.html', {'form': form})
+
+    return render(request, 'my_auth/login.html', {'form': form})
 
 
 def logout(request):

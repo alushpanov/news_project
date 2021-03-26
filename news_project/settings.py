@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'bootstrap4',
     'my_auth.apps.MyAuthConfig',
     'news.apps.NewsConfig',
 ]
