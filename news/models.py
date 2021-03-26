@@ -25,9 +25,18 @@ class Article(models.Model):
     image = models.ImageField(upload_to=article_image_path, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
     archived = models.BooleanField(default=False)
+    likes = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
 
     objects = ArticleManager()
     all_objects = models.Manager()
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    text = models.TextField()
+    likes = models.IntegerField(default=0)
