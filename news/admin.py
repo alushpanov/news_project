@@ -10,7 +10,7 @@ class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'archived')
 
     def get_queryset(self, request):
-        return Article.all_articles.order_by('-created_at')
+        return Article.all_objects.order_by('-created_at')
 
 
 @admin.register(Category)

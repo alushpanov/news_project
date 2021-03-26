@@ -1,11 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from my_auth.forms.login import MyLoginForm
+from my_auth.forms.login import LoginForm
 from my_auth.models import MyUser
 
 
-class MyRegisterForm(MyLoginForm):
+class RegisterForm(LoginForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
 

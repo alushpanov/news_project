@@ -22,8 +22,8 @@
             {% empty %}
                 No categories provided.
             {% endfor %} <br>
-            <button type="button" class="btn btn-link"><a href="{% url 'news:edit' article.pk %}">Edit</a></button>
-            <form action="{% url 'news:archive' article.pk %}" method="post">
+            <button type="button" class="btn btn-link"><a href="{% url 'news:update_article' article.pk %}">Edit</a></button>
+            <form action="{% url 'news:archive_article' article.pk %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="Delete" class="btn btn-danger">
             </form>

@@ -29,7 +29,7 @@ class Article(models.Model):
     views = models.IntegerField(default=0)
 
     objects = ArticleManager()
-    all_articles = models.Manager()
+    all_objects = models.Manager()
 
     def __str__(self):
         return self.title
