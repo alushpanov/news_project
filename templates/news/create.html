@@ -1,27 +1,12 @@
 {% extends "base.html" %}
+{% load bootstrap4 %}
 
 {% block create %}
-<form enctype="multipart/form-data" action="/create/" method="post">
+<form enctype="multipart/form-data" action="/create/" method="post" class="form">
     {% csrf_token %}
-    <p>
-        <label for="title">Title: </label>
-        {{ form.title }}
-    </p>
-    <p>
-        <label for="text">Text: </label>
-        {{ form.text }}
-    </p>
-    <p>
-        {% if form.categories.errors %}
-            {{ form.categories.errors }}
-        {% endif %}
-        <label for="categories">Categories: </label>
-        {{ form.categories }}
-    </p>
-    <p>
-        <label for="image">Image: </label>
-        {{ form.image }}
-    </p>
-    <button type="submit">Submit</button>
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    {% endbuttons %}
 </form>
 {% endblock %}

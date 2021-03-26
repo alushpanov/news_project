@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views import generic
 
@@ -27,3 +27,27 @@ def create(request):
             article.categories.set(categories)
             return redirect('news:index')
     return render(request, 'news/create.html', {'form': form})
+
+
+class MyNewsView(generic.ListView):
+    template_name = 'news/user.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
+
+
+def edit(request, pk):  # turn to class view
+    article = get_object_or_404(Article, pk=pk)
+    form = ArticleForm(request.POST or None, request.FILES or None, instance=article)
+    if request.POST:
+        if form.is_valid():
+            form.save()
+            return redirect('news:my_news')
+    return render(request, 'news/edit.html', {'form': form})
+
+
+def archive(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    article.archived = True
+    article.save()
+    return redirect('news:my_news')
