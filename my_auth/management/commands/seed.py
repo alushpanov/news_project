@@ -1,11 +1,10 @@
 import random
 
-from django.core.files.images import ImageFile
 from django.core.files import File
 from django.core.management.base import BaseCommand
 
 from my_auth.models import MyUser
-from news.models import Article, Category
+from news.models import Article, Category, Comment
 
 
 class Command(BaseCommand):
@@ -13,11 +12,11 @@ class Command(BaseCommand):
         self.stdout.write('clearing database...')
         clear_data()
         self.stdout.write('seeding users...')
-        create_users()
+        seed_users()
         self.stdout.write('seeding categories...')
-        create_categories()
+        seed_categories()
         self.stdout.write('seeding articles...')
-        create_articles()
+        seed_articles()
         self.stdout.write('done!')
 
 
@@ -27,7 +26,7 @@ def clear_data():
     Category.objects.all().delete()
 
 
-def create_users():
+def seed_users():
     with open('../first_names.txt', 'r') as first_names,\
             open('../last_names.txt', 'r') as last_names:
         for i in range(1, 11):  # 2001
@@ -43,7 +42,7 @@ def create_users():
             user.save()
 
 
-def create_categories():
+def seed_categories():
     names = [
         'politics',
         'sport',
@@ -75,7 +74,7 @@ lorem_ipsum = [
 ]
 
 
-def create_articles():
+def seed_articles():
     authors = MyUser.objects.all()
     categories = Category.objects.all()
     with open('../russian.txt', 'r', encoding='cp1251') as file:
@@ -103,3 +102,22 @@ def create_articles():
 
             if article_categories_amount % 2 == 0:
                 article.image.save('3.jpeg', File(open('../3.jpeg', 'rb')))
+
+            article_comments_amount = random.randint(0, 10)  # 100
+            seed_article_comments(article, article_comments_amount, file, authors)
+
+
+def seed_article_comments(article, comments_amount, file, authors):
+    if comments_amount == 0:
+        return
+    else:
+        for comment in range(comments_amount):
+            text = ''
+            for text_lines in range(10):
+                text += file.readline()[:-1] + ' '
+            comment = Comment.objects.create(
+                author=random.choice(authors),
+                article=article,
+                text=text,
+                likes=random.randint(0, 100)
+            )
