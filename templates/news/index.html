@@ -26,14 +26,14 @@
                 {% endfor %}
             </div>
             <div class="comment_list">
-                Comments:
-                {% for comment in comment_list %}
-                    {{ comment.author }} wrote:
+                <p>Comments:</p>
+                {% for comment in article.comments.all %}
+                    {{ comment.author.first_name }} {{ comment.author.last_name }} wrote:
                     <div class="comment">
                         {{ comment.text }}
                     </div>
                     <i>
-                        Likes: {{ comment.likes }}
+                        Likes: {{ comment.likes }} <br>
                     </i>
                 {% endfor %}
             </div>
