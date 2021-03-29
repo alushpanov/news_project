@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 
 {% block index_content %}
+<div class="pagination">
+    <nav class="nav">
+        {% if page_obj.has_previous %}
+            <a class="nav-link" href="?page=1">First</a>
+            <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    </nav>
+</div>
+
 <div class="article_list">
-    {% for article in article_list %}
+    {% for article in page_obj %}
         <hr>
         <div class="article">
             <h2>{{ article.title }}</h2>
