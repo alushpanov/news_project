@@ -50,4 +50,10 @@ body {
     margin-left: 50%;
     transform: translateX(-50%);
     margin-top: 50px;
+    height: 250px;
+    overflow: scroll;
+}
+
+.comment {
+    margin-bottom: 15px;
 }

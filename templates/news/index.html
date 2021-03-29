@@ -30,11 +30,9 @@
                 {% for comment in article.comments.all %}
                     {{ comment.author.first_name }} {{ comment.author.last_name }} wrote:
                     <div class="comment">
-                        {{ comment.text }}
+                        {{ comment.text }} <br>
+                        <i>Likes: {{ comment.likes }}</i>
                     </div>
-                    <i>
-                        Likes: {{ comment.likes }} <br>
-                    </i>
                 {% endfor %}
             </div>
         </div>
