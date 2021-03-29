@@ -19,6 +19,9 @@
         <a class="nav-link" href="{% url 'news:create_article'%}">Create news</a>
         <a class="nav-link" href="{% url 'my_auth:logout' %}">Logout</a>
     </nav>
+    <form action="{% url 'news:search' %}" method="get">
+        <input name="q" type="text" placeholder="Search...">
+    </form>
     {% endif %}
 </header>
 
@@ -38,6 +41,9 @@
 {% endblock %}
 
 {% block edit %}
+{% endblock %}
+
+{% block search_results %}
 {% endblock %}
 
 </body>
