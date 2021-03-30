@@ -10,7 +10,7 @@ from news.models import Article
 @method_decorator(login_required, name='dispatch')
 class IndexView(generic.ListView):
     template_name = 'news/index.html'
-    paginate_by = 100
+    paginate_by = 10
 
     def get_queryset(self):
         return Article.objects.all().order_by('-created_at')
@@ -51,3 +51,12 @@ def archive_article(request, pk):
     article.archived = True
     article.save()
     return redirect('news:user_articles')
+
+
+class AnalyticsTemplateView(generic.TemplateView):
+    template_name = 'news/analytics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['most_liked_article'] = Article.objects.get_most_liked_article()
+        return context

@@ -14,9 +14,10 @@
     {% if user.is_authenticated %}
     <p>You are logged as {{ user.email }}</p>
     <nav class="nav">
-        <a class="nav-link" href="{% url 'news:index'%}">All news</a>
-        <a class="nav-link" href="{% url 'news:user_articles'%}">My news</a>
-        <a class="nav-link" href="{% url 'news:create_article'%}">Create news</a>
+        <a class="nav-link" href="{% url 'news:index' %}">All news</a>
+        <a class="nav-link" href="{% url 'news:user_articles' %}">My news</a>
+        <a class="nav-link" href="{% url 'news:create_article' %}">Create news</a>
+        <a class="nav-link" href="{% url 'news:analytics' %}">Analytics</a>
         <a class="nav-link" href="{% url 'my_auth:logout' %}">Logout</a>
     </nav>
     {% endif %}
@@ -38,6 +39,9 @@
 {% endblock %}
 
 {% block edit %}
+{% endblock %}
+
+{% block analytics %}
 {% endblock %}
 
 </body>

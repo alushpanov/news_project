@@ -15,6 +15,10 @@ class ArticleManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(archived=False)
 
+    def get_most_liked_article(self):
+        max_likes = self.get_queryset().aggregate(models.Max('likes'))
+        return self.get_queryset().get(likes=max_likes['likes__max'])
+
 
 class Article(models.Model):
     title = models.CharField(max_length=100)

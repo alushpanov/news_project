@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block analytics %}
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Most liked article:</h3>
+        <p>id: {{ most_liked_article.id }}</p>
+        <p>Title: {{ most_liked_article.title }}</p>
+    </div>
+{% endblock %}
