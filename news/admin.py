@@ -8,6 +8,7 @@ from news.models import Article, Category, Comment
 class ArticleAdmin(admin.ModelAdmin):
     form = ArticleAdminForm
     list_display = ('title', 'archived')
+    list_filter = ('author', )
 
     def get_queryset(self, request):
         return Article.all_objects.order_by('-created_at')
