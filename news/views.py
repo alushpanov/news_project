@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
@@ -11,7 +10,7 @@ from news.models import Article
 @method_decorator(login_required, name='dispatch')
 class IndexView(generic.ListView):
     template_name = 'news/index.html'
-    paginate_by = 100
+    paginate_by = 10
 
     def get_queryset(self):
         return Article.objects.all().order_by('-created_at')
@@ -56,17 +55,8 @@ def archive_article(request, pk):
 
 class SearchListView(generic.ListView):
     model = Article
-    template_name = 'news/index.html'
-    paginate_by = 10
+    template_name = 'news/search.html'
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        return Article.objects.filter(
-            Q(title__icontains=query)
-            | Q(text__icontains=query)
-            | Q(author__first_name__icontains=query)
-            | Q(author__last_name__icontains=query)
-            | Q(comments__author__first_name__icontains=query)
-            | Q(comments__author__last_name__icontains=query)
-            | Q(comments__text__icontains=query)
-        )
+        return Article.objects.search_query(query)
