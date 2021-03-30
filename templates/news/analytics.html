@@ -6,4 +6,27 @@
         <p>id: {{ most_liked_article.id }}</p>
         <p>Title: {{ most_liked_article.title }}</p>
     </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Most commented article:</h3>
+        <p>id: {{ most_commented_article.id }}</p>
+        <p>Title: {{ most_commented_article.title }}</p>
+    </div>
+
+{#    <div class="article">#}
+{#            <h2>{{ most_commented_article.title }}</h2>#}
+{#            <p class="article_text">#}
+{#                {{ most_commented_article.text }}#}
+{#            </p>#}
+{#            <br>#}
+{#            <div class="comment_list">#}
+{#                <p>Comments:</p>#}
+{#                {% for comment in most_commented_article.comments.all %}#}
+{#                    {{ comment.author.first_name }} {{ comment.author.last_name }} wrote:#}
+{#                    <div class="comment">#}
+{#                        {{ comment.text }} <br>#}
+{#                        <i>Likes: {{ comment.likes }}</i>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
 {% endblock %}

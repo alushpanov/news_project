@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from news.managers import ArticleManager
 from news.storage import article_image_path
 
 
@@ -9,15 +10,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class ArticleManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(archived=False)
-
-    def get_most_liked_article(self):
-        max_likes = self.get_queryset().aggregate(models.Max('likes'))
-        return self.get_queryset().get(likes=max_likes['likes__max'])
 
 
 class Article(models.Model):

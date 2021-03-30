@@ -59,4 +59,5 @@ class AnalyticsTemplateView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['most_liked_article'] = Article.objects.get_most_liked_article()
+        context['most_commented_article'] = Article.objects.get_most_commented_article()
         return context
