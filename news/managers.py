@@ -35,11 +35,17 @@ class ArticleManager(Manager):
     def get_date_max_articles_posted(self):
         qs_dates_counted = self._get_queryset_with_dates_counted()
         max_articles_posted = qs_dates_counted.aggregate(Max('articles_count'))
-        date_with_max_articles = qs_dates_counted.filter(articles_count=max_articles_posted['articles_count__max'])[0]  # .first()
-        return date_with_max_articles
+        filtered_max_articles = qs_dates_counted.filter(articles_count=max_articles_posted['articles_count__max'])
+        if len(filtered_max_articles) > 0:
+            return filtered_max_articles[0]  # .first()
+        else:
+            raise ValueError('db is empty')
 
     def get_date_min_articles_posted(self):
         qs_dates_counted = self._get_queryset_with_dates_counted()
         min_articles_posted = qs_dates_counted.aggregate(Min('articles_count'))
-        date_with_min_articles = qs_dates_counted.filter(articles_count=min_articles_posted['articles_count__min'])[0]  # .first()
-        return date_with_min_articles
+        filtered_min_articles = qs_dates_counted.filter(articles_count=min_articles_posted['articles_count__min'])
+        if len(filtered_min_articles) > 0:
+            return filtered_min_articles[0]  # .first()
+        else:
+            raise ValueError('db is empty')
