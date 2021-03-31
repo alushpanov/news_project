@@ -65,7 +65,13 @@ class AnalyticsTemplateView(generic.TemplateView):
         context['amount_of_articles_with_images'] = Article.objects.count_articles_with_images()
         context['amount_of_articles_with_no_views'] = Article.objects.count_articles_with_no_views()
         context['amount_of_articles_with_no_likes'] = Article.objects.count_articles_with_no_likes()
+
         date_with_max_articles = Article.objects.get_date_max_articles_posted()
         context['date_with_max_articles'] = date_with_max_articles['creation_date']
         context['max_articles'] = date_with_max_articles['articles_count']
+
+        date_with_min_articles = Article.objects.get_date_min_articles_posted()
+        context['date_with_min_articles'] = date_with_min_articles['creation_date']
+        context['min_articles'] = date_with_min_articles['articles_count']
+
         return context

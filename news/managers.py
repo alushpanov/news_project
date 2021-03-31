@@ -1,6 +1,7 @@
-from django.db.models import Manager, Max, Count, Sum
-from django.db.models.functions import Cast
+from django.db.models import Manager, Count, Max, Min
 from django.db.models.fields import DateField
+from django.db.models.functions import Cast
+
 
 class ArticleManager(Manager):
     def get_queryset(self):
@@ -24,11 +25,21 @@ class ArticleManager(Manager):
     def count_articles_with_no_likes(self):
         return self.get_queryset().filter(likes=0).count()
 
-    def get_date_max_articles_posted(self):
-        qs_dates_counted = self.get_queryset()\
-            .annotate(creation_date=Cast('created_at', DateField()))\
-            .values('creation_date')\
+    def _get_queryset_with_dates_counted(self):
+        qs_dates_counted = self.get_queryset() \
+            .annotate(creation_date=Cast('created_at', DateField())) \
+            .values('creation_date') \
             .annotate(articles_count=Count('id'))
+        return qs_dates_counted
+
+    def get_date_max_articles_posted(self):
+        qs_dates_counted = self._get_queryset_with_dates_counted()
         max_articles_posted = qs_dates_counted.aggregate(Max('articles_count'))
         date_with_max_articles = qs_dates_counted.filter(articles_count=max_articles_posted['articles_count__max'])[0]  # .first()
         return date_with_max_articles
+
+    def get_date_min_articles_posted(self):
+        qs_dates_counted = self._get_queryset_with_dates_counted()
+        min_articles_posted = qs_dates_counted.aggregate(Min('articles_count'))
+        date_with_min_articles = qs_dates_counted.filter(articles_count=min_articles_posted['articles_count__min'])[0]  # .first()
+        return date_with_min_articles
