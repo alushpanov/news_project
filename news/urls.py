@@ -9,4 +9,5 @@ urlpatterns = [
     path('create/', views.create_article, name='create_article'),
     path('mynews/<int:pk>/archive/', views.archive_article, name='archive_article'),
     path('mynews/<int:pk>/', views.ArticleUpdateView.as_view(), name='update_article'),
+    path('search/', views.SearchArticleListView.as_view(), name='search_articles'),
 ]

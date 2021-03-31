@@ -10,7 +10,7 @@ from news.models import Article
 @method_decorator(login_required, name='dispatch')
 class IndexView(generic.ListView):
     template_name = 'news/index.html'
-    paginate_by = 100
+    paginate_by = 10
 
     def get_queryset(self):
         return Article.objects.all().order_by('-created_at')
@@ -51,3 +51,12 @@ def archive_article(request, pk):
     article.archived = True
     article.save()
     return redirect('news:user_articles')
+
+
+class SearchArticleListView(generic.ListView):
+    model = Article
+    template_name = 'news/search.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return Article.objects.search_query(query)
