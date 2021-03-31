@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from my_auth.models import MyUser
 from news.forms.article import ArticleForm
 from news.models import Article
 
@@ -60,4 +61,5 @@ class AnalyticsTemplateView(generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['most_liked_article'] = Article.objects.get_most_liked_article()
         context['most_commented_article'] = Article.objects.get_most_commented_article()
+        context['most_commenting_user'] = MyUser.objects.get_user_with_max_comments()
         return context

@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.db.models import Max, Count
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -32,3 +33,8 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
+
+    def get_user_with_max_comments(self):
+        qs_comments_counted = self.get_queryset().annotate(comments_count=Count('comments'))
+        most_commenting = qs_comments_counted.aggregate(Max('comments_count'))
+        return qs_comments_counted.filter(comments_count=most_commenting['comments_count__max']).first()
