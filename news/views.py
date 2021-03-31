@@ -63,4 +63,6 @@ class AnalyticsTemplateView(generic.TemplateView):
         context['most_commented_article'] = Article.objects.get_most_commented_article()
         context['most_commenting_user'] = MyUser.objects.get_user_with_max_comments()
         context['amount_of_articles_with_images'] = Article.objects.count_articles_with_images()
+        context['amount_of_articles_with_no_views'] = Article.objects.count_articles_with_no_views()
+        context['amount_of_articles_with_no_likes'] = Article.objects.count_articles_with_no_likes()
         return context

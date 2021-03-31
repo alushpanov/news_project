@@ -16,3 +16,12 @@ class ArticleManager(Manager):
 
     def count_articles_with_images(self):
         return self.get_queryset().exclude(image__exact='').count()
+
+    def count_articles_with_no_views(self):
+        return self.get_queryset().filter(views=0).count()
+
+    def count_articles_with_no_likes(self):
+        return self.get_queryset().filter(likes=0).count()
+
+    def get_date_max_articles_posted(self):
+        pass
