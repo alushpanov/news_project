@@ -1,5 +1,6 @@
-from django.db.models import Manager, Max, Count
-
+from django.db.models import Manager, Max, Count, Sum
+from django.db.models.functions import Cast
+from django.db.models.fields import DateField
 
 class ArticleManager(Manager):
     def get_queryset(self):
@@ -24,4 +25,10 @@ class ArticleManager(Manager):
         return self.get_queryset().filter(likes=0).count()
 
     def get_date_max_articles_posted(self):
-        pass
+        qs_dates_counted = self.get_queryset()\
+            .annotate(creation_date=Cast('created_at', DateField()))\
+            .values('creation_date')\
+            .annotate(articles_count=Count('id'))
+        max_articles_posted = qs_dates_counted.aggregate(Max('articles_count'))
+        date_with_max_articles = qs_dates_counted.filter(articles_count=max_articles_posted['articles_count__max'])[0]  # .first()
+        return date_with_max_articles
