@@ -53,7 +53,7 @@ def archive_article(request, pk):
     return redirect('news:user_articles')
 
 
-class SearchListView(generic.ListView):
+class SearchArticleListView(generic.ListView):
     model = Article
     template_name = 'news/search.html'
 
