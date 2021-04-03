@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block search_results %}
+<div class="article_list">
+    {% for article in article_list %}
+        <hr>
+        <div class="article">
+            <h2>{{ article.title }}</h2>
+            <p class="article_text">
+                {{ article.text }}
+            </p>
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="some image"/>
+            {% endif %}
+            <br>
+            <div class="info">
+                Likes: {{ article.likes }}<br>
+                Views: {{ article.views }}<br>
+                Author: {{ article.author.first_name }} {{ article.author.last_name }}<br>
+                Published: {{ article.created_at }}<br>
+                Last modified: {{ article.last_modified }}<br>
+                {% for category in article.categories.all %}
+                    {{ category }};
+                {% empty %}
+                    No categories provided.
+                {% endfor %}
+            </div>
+            <div class="comment_list">
+                <p>Comments:</p>
+                {% for comment in article.comments.all %}
+                    {{ comment.author.first_name }} {{ comment.author.last_name }} wrote:
+                    <div class="comment">
+                        {{ comment.text }} <br>
+                        <i>Likes: {{ comment.likes }}</i>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.db.models import Manager, Count, Max, Min
+from django.db.models import Manager, Count, Max, Min, Q
 from django.db.models.fields import DateField
 from django.db.models.functions import Cast
 
@@ -6,6 +6,19 @@ from django.db.models.functions import Cast
 class ArticleManager(Manager):
     def get_queryset(self):
         return super().get_queryset().filter(archived=False)
+
+    def search_query(self, query):
+        splitted_query = query.split(' ')
+        q = Q()
+        for s in splitted_query:
+            q |= Q(title__icontains=s)\
+                 | Q(text__icontains=s)\
+                 | Q(comments__text__icontains=s)\
+                 | Q(author__first_name__istartswith=s)\
+                 | Q(author__last_name__istartswith=s)\
+                 | Q(comments__author__first_name__istartswith=s)\
+                 | Q(comments__author__last_name__istartswith=s)
+        return self.get_queryset().filter(q).order_by('-created_at')
 
     def get_most_liked_article(self):
         max_likes = self.get_queryset().aggregate(Max('likes'))

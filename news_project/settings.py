@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'my_auth.middleware.UnauthorizedRequestsMiddleware',
 ]
 
 ROOT_URLCONF = 'news_project.urls'
@@ -180,3 +181,5 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 FIXTURE_DIRS = [
     os.path.join(BASE_DIR, 'fixtures')
 ]
+
+UNAUTHORIZED_REQUEST_COUNT_FILE = BASE_DIR / 'amount_of_unauthorized_requests.txt'
