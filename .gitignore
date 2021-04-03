@@ -3,3 +3,4 @@
 db.sqlite3
 media/
 .env
+amount_of_unauthorized_requests.txt
