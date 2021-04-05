@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'rest_framework',
+    'rest_framework.authtoken',
     'bootstrap4',
     'my_auth.apps.MyAuthConfig',
     'news.apps.NewsConfig',
@@ -183,3 +185,10 @@ FIXTURE_DIRS = [
 ]
 
 UNAUTHORIZED_REQUEST_COUNT_FILE = BASE_DIR / 'amount_of_unauthorized_requests.txt'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
