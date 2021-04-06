@@ -18,7 +18,7 @@ class ArticleManager(Manager):
                  | Q(author__last_name__istartswith=s)\
                  | Q(comments__author__first_name__istartswith=s)\
                  | Q(comments__author__last_name__istartswith=s)
-        return self.get_queryset().filter(q).order_by('-created_at')
+        return self.get_queryset().filter(q).distinct().order_by('-created_at')
 
     def get_most_liked_article(self):
         max_likes = self.get_queryset().aggregate(Max('likes'))
