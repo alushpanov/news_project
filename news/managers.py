@@ -26,8 +26,7 @@ class ArticleManager(Manager):
 
     def get_most_commented_article(self):
         qs_comments_counted = self.get_queryset().annotate(comments_count=Count('comments'))
-        max_commented = qs_comments_counted.aggregate(Max('comments_count'))
-        return qs_comments_counted.filter(comments_count=max_commented['comments_count__max']).first()
+        return qs_comments_counted.order_by('comments_count').last()
 
     def count_articles_with_images(self):
         return self.get_queryset().exclude(image__exact='').count()
