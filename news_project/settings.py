@@ -189,6 +189,8 @@ UNAUTHORIZED_REQUEST_COUNT_FILE = BASE_DIR / 'amount_of_unauthorized_requests.tx
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }

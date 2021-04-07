@@ -1,19 +1,17 @@
 from django.contrib.auth import login as django_login, logout as django_logout
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.response import Response
 
-from my_auth.api.serializers import UserSerializer
-from my_auth.forms.login import LoginForm
-from my_auth.forms.register import RegisterForm
+from my_auth.api.serializers import UserLoginSerializer, UserRegisterSerializer
 from my_auth.models import MyUser
 
 
 class LoginAuthToken(ObtainAuthToken):
-    serializer_class = UserSerializer
-
-    def get(self, request):
-        return render(request, 'my_auth/login.html', {'form': LoginForm()})
+    serializer_class = UserLoginSerializer
 
 
 def logout(request):
@@ -21,20 +19,13 @@ def logout(request):
     return redirect('my_auth:login')
 
 
-def register(request):
-    form = RegisterForm()
-    if request.POST:
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            if MyUser.objects.filter(email=email).exists():
-                return render(request, 'my_auth/register.html', {
-                    'form': form,
-                    'msg': 'User with such email is already registered!'
-                })
-            else:
-                user = MyUser.objects.create_user(**form.cleaned_data)
-                django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('news:index')
-    else:
-        return render(request, 'my_auth/register.html', {'form': form})
+class RegisterAuthToken(ObtainAuthToken, CreateModelMixin):
+    serializer_class = UserRegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        create_response = super().create(request, *args, **kwargs)
+        email = create_response.data.get('email')
+        user = MyUser.objects.get(email=email)
+        token, created = Token.objects.get_or_create(user=user)
+        django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return Response({'token': token.key})
