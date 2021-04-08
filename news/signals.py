@@ -10,7 +10,8 @@ from notifications.models import Notification
 
 @receiver(post_delete, sender=Article)
 def remove_image(sender, instance, **kwargs):
-    os.remove(os.path.join(settings.MEDIA_ROOT, instance.image.path))
+    if instance.image:
+        os.remove(os.path.join(settings.MEDIA_ROOT, instance.image.path))
 
 
 @receiver(post_save, sender=Like)
