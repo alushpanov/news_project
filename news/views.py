@@ -3,6 +3,9 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+
+from news.api.serializers import ArticleSerializer
 from news.forms.article import ArticleForm
 from news.models import Article
 
@@ -24,19 +27,29 @@ class UserArticleListView(generic.ListView):
         return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
-@login_required()
-def create_article(request):
-    form = ArticleForm()
-    if request.POST:
-        form = ArticleForm(request.POST, request.FILES)
-        if form.is_valid():
-            categories = form.cleaned_data.pop('categories')
-            article = form.save(commit=False)
-            article.author = request.user
-            article.save()
-            article.categories.set(categories)
-            return redirect('news:index')
-    return render(request, 'news/create_article.html', {'form': form})
+class CreateArticleAPIView(CreateAPIView):
+    serializer_class = ArticleSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'author_id': self.request.user.id})
+        return context
+
+
+
+# @login_required()
+# def create_article(request):
+#     form = ArticleForm()
+#     if request.POST:
+#         form = ArticleForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             categories = form.cleaned_data.pop('categories')
+#             article = form.save(commit=False)
+#             article.author = request.user
+#             article.save()
+#             article.categories.set(categories)
+#             return redirect('news:index')
+#     return render(request, 'news/create_article.html', {'form': form})
 
 
 class ArticleUpdateView(generic.UpdateView):
