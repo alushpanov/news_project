@@ -7,7 +7,8 @@ from news.models import Article
 
 
 def remove_image(sender, instance, **kwargs):
-    os.remove(os.path.join(settings.MEDIA_ROOT, instance.image.path))
+    if instance.image:
+        os.remove(os.path.join(settings.MEDIA_ROOT, instance.image.path))
 
 
 post_delete.connect(remove_image, sender=Article)
