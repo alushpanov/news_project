@@ -1,17 +1,51 @@
-from rest_framework import serializers
+import base64
+from binascii import Error as BinASCIIError
 
-from news.models import Article
+from django.core.files.base import ContentFile
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+from news.models import Article, Category
+
+
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        """
+        It checks for the type of the data and either decodes it from
+        base64 or directly saves the file.
+        """
+
+        data_name = data['name']
+        data_content = data['content']
+        if isinstance(data_content, str):
+            try:
+                decoded_file = base64.b64decode(data_content)
+            except BinASCIIError:
+                raise ValidationError('Corrupted file data, please try again.')
+            data_content = ContentFile(decoded_file, name=f'{data_name}')
+        else:
+            raise ValidationError(
+                '%(value)s is not a valid file format' % type(data_content),
+                code='invalid',
+            )
+        return super().to_internal_value(data_content)
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(required=False)
+    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+
     class Meta:
         model = Article
         fields = ['title', 'text', 'image', 'categories']
 
     def create(self, validated_data):
-        article = Article.objects.create(
-            title=validated_data['title'],
-            text=validated_data['text'],
-            author_id=self.context['author_id'],
-        )
+        article = Article(author_id=self.context['request'].user.id)
+        super().update(article, validated_data)
+        article.categories.set(validated_data['categories'])
         return article
+
+    def validate_categories(self, data):
+        if len(data) > 3:
+            raise ValidationError('No more than 3 categories allowed!')
+        return data
