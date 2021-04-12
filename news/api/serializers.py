@@ -6,6 +6,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from news.models import Article, Category
+from news.signals import replace_image
 
 
 class Base64ImageField(serializers.ImageField):
@@ -49,3 +50,10 @@ class ArticleSerializer(serializers.ModelSerializer):
         if len(data) > 3:
             raise ValidationError('No more than 3 categories allowed!')
         return data
+
+    def update(self, instance, validated_data):
+        old_image_name = instance.image.name.split('/')[-1]
+        new_image_name = self.context['request'].data['image']['name']
+        if old_image_name != new_image_name:
+            replace_image.send(sender=Article, instance=instance)
+        return super().update(instance, validated_data)

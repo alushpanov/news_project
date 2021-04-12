@@ -1,5 +1,4 @@
 from rest_framework import viewsets, permissions
-from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 
 from news.api.serializers import ArticleSerializer
 from news.models import Article
@@ -20,6 +19,5 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
 
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
-    parser_classes = [JSONParser, MultiPartParser, ]  # FileUploadParser
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
