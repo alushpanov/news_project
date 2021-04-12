@@ -1,77 +1,25 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.utils.decorators import method_decorator
-from django.views import generic
-
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import viewsets, permissions
+from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 
 from news.api.serializers import ArticleSerializer
-from news.forms.article import ArticleForm
 from news.models import Article
 
 
-@method_decorator(login_required, name='dispatch')
-class IndexView(generic.ListView):
-    template_name = 'news/index.html'
-    paginate_by = 10
+class IsAuthorOrReadOnly(permissions.BasePermission):
+    """
+    Object-level permission to only allow owners of an object to edit it.
+    """
 
-    def get_queryset(self):
-        return Article.objects.all().order_by('-created_at')
-
-
-@method_decorator(login_required, name='dispatch')
-class UserArticleListView(generic.ListView):
-    template_name = 'news/user_articles.html'
-
-    def get_queryset(self):
-        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.author == request.user
 
 
-class CreateArticleAPIView(CreateAPIView):
+class ArticleViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all()
+    parser_classes = [JSONParser, MultiPartParser, ]  # FileUploadParser
     serializer_class = ArticleSerializer
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({'author_id': self.request.user.id})
-        return context
-
-
-
-# @login_required()
-# def create_article(request):
-#     form = ArticleForm()
-#     if request.POST:
-#         form = ArticleForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             categories = form.cleaned_data.pop('categories')
-#             article = form.save(commit=False)
-#             article.author = request.user
-#             article.save()
-#             article.categories.set(categories)
-#             return redirect('news:index')
-#     return render(request, 'news/create_article.html', {'form': form})
-
-
-class ArticleUpdateView(generic.UpdateView):
-    model = Article
-    template_name = 'news/update_article.html'
-    form_class = ArticleForm
-
-    def get_success_url(self):
-        return reverse('news:user_articles')
-
-
-def archive_article(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    article.archived = True
-    article.save()
-    return redirect('news:user_articles')
-
-
-class SearchArticleListView(generic.ListView):
-    model = Article
-    template_name = 'news/search.html'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        return Article.objects.search_query(query)
+    permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
