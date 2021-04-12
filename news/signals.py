@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from django.db.models.signals import post_delete, post_save
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 
 from news.models import Article, Comment, Like
 from notifications.models import Notification
@@ -19,3 +19,7 @@ def remove_image(sender, instance, **kwargs):
 def send_notification(sender, instance, **kwargs):
     notification = Notification.create_from_instance(instance=instance, signal_sender=sender)
     notification.save()
+
+
+replace_image = Signal()
+replace_image.connect(remove_image)
