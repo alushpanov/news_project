@@ -1,27 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.utils.decorators import method_decorator
 from django.views import generic
 
 from news.forms.article import ArticleForm
+
 from news.models import Article
-
-
-@method_decorator(login_required, name='dispatch')
-class IndexView(generic.ListView):
-    template_name = 'news/index.html'
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Article.objects.all().order_by('-created_at')
-
-
-@method_decorator(login_required, name='dispatch')
-class UserArticleListView(generic.ListView):
-    template_name = 'news/user_articles.html'
-
-    def get_queryset(self):
-        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
 
 
 @login_required()
