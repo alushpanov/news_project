@@ -49,3 +49,14 @@ class ArticleSerializer(serializers.ModelSerializer):
         if len(data) > 3:
             raise ValidationError('No more than 3 categories allowed!')
         return data
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+    def create(self, validated_data):
+        category = Category(author_id=self.context['request'].user.id)
+        super().update(category, validated_data)
+        return category

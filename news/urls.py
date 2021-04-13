@@ -7,6 +7,7 @@ from news import views
 
 router = DefaultRouter()
 router.register(r'articles', views.ArticleViewSet)
+router.register(r'categories', views.CategoryViewSet)
 
 app_name = 'news'
 urlpatterns = [
