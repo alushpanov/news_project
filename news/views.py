@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 
+from my_auth.models import MyUser
 from news.forms.article import ArticleForm
 from news.models import Article
 
@@ -53,6 +54,29 @@ def archive_article(request, pk):
     article.archived = True
     article.save()
     return redirect('news:user_articles')
+
+
+class AnalyticsTemplateView(generic.TemplateView):
+    template_name = 'news/analytics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['most_liked_article'] = Article.objects.get_most_liked_article()
+        context['most_commented_article'] = Article.objects.get_most_commented_article()
+        context['most_commenting_user'] = MyUser.objects.get_user_with_max_comments()
+        context['amount_of_articles_with_images'] = Article.objects.count_articles_with_images()
+        context['amount_of_articles_with_no_views'] = Article.objects.count_articles_with_no_views()
+        context['amount_of_articles_with_no_likes'] = Article.objects.count_articles_with_no_likes()
+
+        date_with_max_articles = Article.objects.get_date_max_articles_posted()
+        context['date_with_max_articles'] = date_with_max_articles['creation_date']
+        context['max_articles'] = date_with_max_articles['articles_count']
+
+        date_with_min_articles = Article.objects.get_date_min_articles_posted()
+        context['date_with_min_articles'] = date_with_min_articles['creation_date']
+        context['min_articles'] = date_with_min_articles['articles_count']
+
+        return context
 
 
 class SearchArticleListView(generic.ListView):
