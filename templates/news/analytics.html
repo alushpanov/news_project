@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block analytics %}
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Most liked article:</h3>
+        <p>id: {{ most_liked_article.id }}</p>
+        <p>Title: {{ most_liked_article.title }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Most commented article:</h3>
+        <p>id: {{ most_commented_article.id }}</p>
+        <p>Title: {{ most_commented_article.title }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Most commenting user:</h3>
+        <p>id: {{ most_commenting_user.id }}</p>
+        <p>Full name: {{ most_commenting_user.first_name }} {{ most_commenting_user.last_name }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Amount of articles with images:</h3>
+        <p>{{ amount_of_articles_with_images }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Amount of articles with no views:</h3>
+        <p>{{ amount_of_articles_with_no_views }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Amount of articles with no likes:</h3>
+        <p>{{ amount_of_articles_with_no_likes }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Max amount of articles were posted:</h3>
+        <p>Date: {{ date_with_max_articles }}</p>
+        <p>Amount: {{ max_articles }}</p>
+    </div>
+    <div style="margin-left: 50%; transform: translateX(-50%)">
+        <h3>Min amount of articles were posted:</h3>
+        <p>Date: {{ date_with_min_articles }}</p>
+        <p>Amount: {{ min_articles }}</p>
+    </div>
+{% endblock %}
