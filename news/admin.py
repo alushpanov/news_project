@@ -9,6 +9,7 @@ class ArticleAdmin(admin.ModelAdmin):
     form = ArticleAdminForm
     list_display = ('title', 'archived')
     list_filter = ('author', )
+    readonly_fields = ['likes']
 
     def get_queryset(self, request):
         return Article.all_objects.order_by('-created_at')
