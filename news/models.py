@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Q
 
 from news.storage import article_image_path
+from notifications.models import Like
 
 
 class Category(models.Model):
@@ -40,7 +42,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to=article_image_path, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='articles', blank=True)
     archived = models.BooleanField(default=False)
-    likes = models.IntegerField(default=0)
+    likes = GenericRelation(Like)
     views = models.IntegerField(default=0)
 
     objects = ArticleManager()
@@ -54,4 +56,4 @@ class Comment(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comments', on_delete=models.CASCADE)
     article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
     text = models.TextField()
-    likes = models.IntegerField(default=0)
+    likes = GenericRelation(Like)
