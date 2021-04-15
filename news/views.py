@@ -1,17 +1,64 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.utils.decorators import method_decorator
+from django.views import generic
 
-from news.api.serializers import ArticleSerializer
+from news.forms.article import ArticleForm
 from news.models import Article
 
 
-@api_view(http_method_names=['PATCH'])
-@permission_classes(permission_classes=[IsAuthenticated])
-def like_article(request, pk):
-    article = Article.objects.get(pk=pk)
-    article.likes += 1
-    article.save()
+@method_decorator(login_required, name='dispatch')
+class IndexView(generic.ListView):
+    template_name = 'news/index.html'
+    paginate_by = 10
 
-    serializer = ArticleSerializer(instance=article)
-    return Response(serializer.data)
+    def get_queryset(self):
+        return Article.objects.all().order_by('-created_at')
+
+
+@method_decorator(login_required, name='dispatch')
+class UserArticleListView(generic.ListView):
+    template_name = 'news/user_articles.html'
+
+    def get_queryset(self):
+        return Article.objects.filter(author_id=self.request.user.id).order_by('-created_at')
+
+
+@login_required()
+def create_article(request):
+    form = ArticleForm()
+    if request.POST:
+        form = ArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            categories = form.cleaned_data.pop('categories')
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            article.categories.set(categories)
+            return redirect('news:index')
+    return render(request, 'news/create_article.html', {'form': form})
+
+
+class ArticleUpdateView(generic.UpdateView):
+    model = Article
+    template_name = 'news/update_article.html'
+    form_class = ArticleForm
+
+    def get_success_url(self):
+        return reverse('news:user_articles')
+
+
+def archive_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    article.archived = True
+    article.save()
+    return redirect('news:user_articles')
+
+
+class SearchArticleListView(generic.ListView):
+    model = Article
+    template_name = 'news/search.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return Article.objects.search_query(query)
