@@ -1,7 +1,6 @@
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser, MultiPartParser
-from rest_framework.response import Response
 
 from news.api.serializers import ArticleSerializer, CommentSerializer
 from news.models import Article, Comment
@@ -32,14 +31,8 @@ class ArticleViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
-
-    def get_queryset(self):
-        return Comment.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        query_set = self.get_queryset().filter(article_id=request.query_params['article_id'])
-        serializer = self.serializer_class(query_set, many=True)
-        return Response(serializer.data)
+    queryset = Comment.objects.all()
+    filter_fields = ['article_id']
 
 
 @api_view(http_method_names=['POST', 'DELETE'])
