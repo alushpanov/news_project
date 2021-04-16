@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from news.models import Article, Category
+from news.models import Article, Category, Comment
 from news.signals import replace_image
 
 
@@ -57,3 +57,19 @@ class ArticleSerializer(serializers.ModelSerializer):
         if old_image_name != new_image_name:
             replace_image.send(sender=Article, instance=instance)
         return super().update(instance, validated_data)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['author', 'article', 'text']
+
+    def create(self, validated_data):
+        comment = Comment(
+            author=self.context['request'].user,
+            article_id=validated_data['article']
+        )
+        super().update(comment, validated_data)
+        return comment

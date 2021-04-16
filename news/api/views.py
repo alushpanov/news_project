@@ -1,8 +1,9 @@
-from rest_framework import viewsets, permissions
-from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
+from rest_framework import permissions, viewsets
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.response import Response
 
-from news.api.serializers import ArticleSerializer
-from news.models import Article
+from news.api.serializers import ArticleSerializer, CommentSerializer
+from news.models import Article, Comment
 
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -20,6 +21,17 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
 
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
-    parser_classes = [JSONParser, MultiPartParser, ]  # FileUploadParser
+    parser_classes = [JSONParser, MultiPartParser]
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
+
+    def list(self, request, *args, **kwargs):
+        query_set = self.queryset.filter(article_id=request.data['article'])
+        serializer = self.serializer_class(query_set, many=True)
+        return Response(serializer.data)
