@@ -2,8 +2,8 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q
 
+from news.managers import ArticleManager, CommentManager
 from news.storage import article_image_path
 
 
@@ -12,25 +12,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class ArticleManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(archived=False)
-
-    def search_query(self, query):
-        splitted_query = query.split(' ')
-        q = Q()
-        for s in splitted_query:
-            q |= Q(title__icontains=s)\
-                 | Q(text__icontains=s)\
-                 | Q(comments__text__icontains=s)\
-                 | Q(author__first_name__istartswith=s)\
-                 | Q(author__last_name__istartswith=s)\
-                 | Q(comments__author__first_name__istartswith=s)\
-                 | Q(comments__author__last_name__istartswith=s)
-
-        return self.get_queryset().filter(q).order_by('-created_at')
 
 
 class Like(models.Model):
@@ -64,3 +45,4 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
     text = models.TextField()
     likes = GenericRelation(Like)
+    objects = CommentManager()
