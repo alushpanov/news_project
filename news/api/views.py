@@ -1,9 +1,12 @@
-from rest_framework import permissions, viewsets
-from rest_framework.decorators import api_view
-from rest_framework.parsers import JSONParser, MultiPartParser
+from django.contrib.contenttypes.models import ContentType
 
-from news.api.serializers import ArticleSerializer, CommentSerializer
-from news.models import Article, Comment
+from rest_framework import permissions, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.response import Response
+
+from news.api.serializers import ArticleSerializer, CommentSerializer, LikeSerializer
+from news.models import Article, Comment, Like
 
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -35,6 +38,23 @@ class CommentViewSet(viewsets.ModelViewSet):
     filter_fields = ['article_id']
 
 
-@api_view(http_method_names=['POST', 'DELETE'])
+@api_view(http_method_names=['POST', 'DELETE'])  # uniqueness of likes
+@permission_classes(permission_classes=[permissions.IsAuthenticated, IsAuthorOrReadOnly])
 def like(request):
-    pass
+    if request.method == 'POST':
+        try:
+            instance_id = request.query_params['article_id']
+            content_type = Article
+        except KeyError:
+            instance_id = request.query_params['comment_id']
+            content_type = Comment
+
+        like_obj = Like.objects.create(
+            user=request.user,
+            object_id=instance_id,
+            content_type_id=ContentType.objects.get_for_model(content_type).id
+        )
+        serializer = LikeSerializer(like_obj)
+        return Response(serializer.data)
+    elif request.method == 'DELETE':
+        pass

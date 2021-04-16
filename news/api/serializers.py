@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from news.models import Article, Category, Comment
+from news.models import Article, Category, Comment, Like
 from news.signals import replace_image
 
 
@@ -87,4 +87,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    pass
+    class Meta:
+        model = Like
+        fields = ['user', 'object_id']
