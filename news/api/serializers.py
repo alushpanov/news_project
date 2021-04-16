@@ -35,10 +35,11 @@ class Base64ImageField(serializers.ImageField):
 class ArticleSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in ArticleManager
 
     class Meta:
         model = Article
-        fields = ['title', 'text', 'image', 'categories']
+        fields = ['title', 'text', 'image', 'categories', 'num_likes']
 
     def create(self, validated_data):
         article = Article(author_id=self.context['request'].user.id)
@@ -52,24 +53,38 @@ class ArticleSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        old_image_name = instance.image.name.split('/')[-1]
-        new_image_name = self.context['request'].data['image']['name']
-        if old_image_name != new_image_name:
-            replace_image.send(sender=Article, instance=instance)
+        try:
+            new_image_name = self.context['request'].data['image']['name']
+            old_image_name = instance.image.name.split('/')[-1]
+            if old_image_name != new_image_name:
+                replace_image.send(sender=Article, instance=instance)
+        except KeyError:
+            pass
+        validated_data['num_likes'] = instance.num_likes
         return super().update(instance, validated_data)
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
+    article = serializers.PrimaryKeyRelatedField(read_only=True)
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in CommentManager
 
     class Meta:
         model = Comment
-        fields = ['author', 'article', 'text']
+        fields = ['author', 'article', 'text', 'num_likes']
 
     def create(self, validated_data):
         comment = Comment(
             author=self.context['request'].user,
-            article_id=validated_data['article']
+            article_id=self.context['request'].query_params['article_id']
         )
         super().update(comment, validated_data)
         return comment
+
+    def update(self, instance, validated_data):
+        validated_data['num_likes'] = instance.num_likes
+        return super().update(instance, validated_data)
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    pass

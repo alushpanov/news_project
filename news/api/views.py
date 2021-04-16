@@ -1,4 +1,5 @@
 from rest_framework import permissions, viewsets
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -20,18 +21,27 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
-    queryset = Article.objects.all()
     parser_classes = [JSONParser, MultiPartParser]
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
 
+    def get_queryset(self):
+        return Article.objects.all()
+
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
 
+    def get_queryset(self):
+        return Comment.objects.all()
+
     def list(self, request, *args, **kwargs):
-        query_set = self.queryset.filter(article_id=request.data['article'])
+        query_set = self.get_queryset().filter(article_id=request.query_params['article_id'])
         serializer = self.serializer_class(query_set, many=True)
         return Response(serializer.data)
+
+
+@api_view(http_method_names=['POST', 'DELETE'])
+def like(request):
+    pass
