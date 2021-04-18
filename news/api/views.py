@@ -1,25 +1,14 @@
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 
 from news.api.serializers import ArticleSerializer, CommentSerializer, LikeSerializer
 from news.models import Article, Comment, Like
-
-
-class IsAuthorOrReadOnly(permissions.BasePermission):
-    """
-    Object-level permission to only allow owners of an object to edit it.
-    """
-
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.author == request.user
+from news.permissions import IsAuthorOrReadOnly, IsUserWhoLiked
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
@@ -38,8 +27,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     filter_fields = ['article_id']
 
 
-@api_view(http_method_names=['POST', 'DELETE'])  # uniqueness of likes
-@permission_classes(permission_classes=[permissions.IsAuthenticated, IsAuthorOrReadOnly])
+@api_view(http_method_names=['POST', 'DELETE'])
+@permission_classes(permission_classes=[permissions.IsAuthenticated])
 def like(request):
     if request.method == 'POST':
         try:
@@ -49,7 +38,7 @@ def like(request):
             instance_id = request.query_params['comment_id']
             content_type = Comment
 
-        like_obj = Like.objects.create(
+        like_obj, created = Like.objects.get_or_create(
             user=request.user,
             object_id=instance_id,
             content_type_id=ContentType.objects.get_for_model(content_type).id
@@ -57,4 +46,10 @@ def like(request):
         serializer = LikeSerializer(like_obj)
         return Response(serializer.data)
     elif request.method == 'DELETE':
-        pass
+        like_obj = get_object_or_404(Like, id=request.query_params['id'])
+        # if request.user.has_perm(IsUserWhoLiked, like_obj):  # always False
+        if request.user == like_obj.user:
+            like_obj.delete()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
