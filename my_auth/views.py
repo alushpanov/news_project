@@ -14,7 +14,6 @@ def login(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
-
             if user is not None:
                 django_login(request, user)
                 return redirect('news:index')
@@ -23,7 +22,6 @@ def login(request):
                     'form': form,
                     'msg': 'Login failed!'
                 })
-
     return render(request, 'my_auth/login.html', {'form': form})
 
 
