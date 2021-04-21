@@ -1,28 +1,19 @@
-from django.contrib.auth import authenticate, login as django_login, logout as django_logout
-from django.shortcuts import redirect, render
+from django.contrib.auth import login as django_login, logout as django_logout
+from django.shortcuts import redirect
 
-from my_auth.forms.login import LoginForm
-from my_auth.forms.register import RegisterForm
+from rest_framework import permissions
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.response import Response
+from rest_framework.generics import RetrieveAPIView
+
+from my_auth.api.serializers import UserLoginSerializer, UserRegisterSerializer, UserProfileSerializer
 from my_auth.models import MyUser
 
 
-def login(request):
-    form = LoginForm()
-    if request.POST:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                django_login(request, user)
-                return redirect('news:index')
-            else:
-                return render(request, 'my_auth/login.html', {
-                    'form': form,
-                    'msg': 'Login failed!'
-                })
-    return render(request, 'my_auth/login.html', {'form': form})
+class LoginAuthToken(ObtainAuthToken):
+    serializer_class = UserLoginSerializer
 
 
 def logout(request):
@@ -30,20 +21,21 @@ def logout(request):
     return redirect('my_auth:login')
 
 
-def register(request):
-    form = RegisterForm()
-    if request.POST:
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            if MyUser.objects.filter(email=email).exists():
-                return render(request, 'my_auth/register.html', {
-                    'form': form,
-                    'msg': 'User with such email is already registered!'
-                })
-            else:
-                user = MyUser.objects.create_user(**form.cleaned_data)
-                django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('news:index')
-    else:
-        return render(request, 'my_auth/register.html', {'form': form})
+class RegisterAuthToken(ObtainAuthToken, CreateModelMixin):
+    serializer_class = UserRegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        create_response = super().create(request, *args, **kwargs)
+        email = create_response.data.get('email')
+        user = MyUser.objects.get(email=email)
+        token, created = Token.objects.get_or_create(user=user)
+        django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return Response({'token': token.key})
+
+
+class UserProfileAPIView(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return MyUser.objects.filter(id=self.request.user.id)
