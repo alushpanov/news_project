@@ -12,4 +12,5 @@ router.register(r'categories', views.CategoryViewSet)
 app_name = 'news'
 urlpatterns = [
     path('', include(router.urls)),
+    path('analytics/', views.get_analytics),
 ]
