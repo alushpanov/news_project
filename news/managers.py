@@ -5,7 +5,7 @@ from django.db.models.functions import Cast
 
 class ArticleManager(Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(archived=False)
+        return super().get_queryset().annotate(num_likes=Count('likes')).filter(archived=False)
 
     def search_query(self, query):
         splitted_query = query.split(' ')
@@ -61,3 +61,8 @@ class ArticleManager(Manager):
             return filtered_min_articles[0]  # .first()
         else:
             raise ValueError('db is empty')
+
+
+class CommentManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(num_likes=Count('likes'))

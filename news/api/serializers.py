@@ -5,7 +5,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from news.models import Article, Category
+from news.models import Article, Category, Comment, Like
 from news.signals import replace_image
 
 
@@ -35,10 +35,11 @@ class Base64ImageField(serializers.ImageField):
 class ArticleSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in ArticleManager
 
     class Meta:
         model = Article
-        fields = ['title', 'text', 'image', 'categories']
+        fields = ['title', 'text', 'image', 'categories', 'num_likes']
 
     def create(self, validated_data):
         article = Article(author_id=self.context['request'].user.id)
@@ -52,10 +53,36 @@ class ArticleSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        old_image_name = instance.image.name.split('/')[-1]
-        new_image_name = self.context['request'].data['image']['name']
-        if old_image_name != new_image_name:
-            replace_image.send(sender=Article, instance=instance)
+        try:
+            new_image_name = self.context['request'].data['image']['name']
+            old_image_name = instance.image.name.split('/')[-1]
+            if old_image_name != new_image_name:
+                replace_image.send(sender=Article, instance=instance)
+        except KeyError:
+            pass
+        validated_data['num_likes'] = instance.num_likes
+        return super().update(instance, validated_data)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
+    article = serializers.PrimaryKeyRelatedField(read_only=True)
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in CommentManager
+
+    class Meta:
+        model = Comment
+        fields = ['author', 'article', 'text', 'num_likes']
+
+    def create(self, validated_data):
+        comment = Comment(
+            author=self.context['request'].user,
+            article_id=self.context['request'].query_params['article_id']
+        )
+        super().update(comment, validated_data)
+        return comment
+
+    def update(self, instance, validated_data):
+        validated_data['num_likes'] = instance.num_likes
         return super().update(instance, validated_data)
 
 
@@ -84,3 +111,9 @@ class AnalyticSerializer(serializers.Serializer):
     max_articles_posted = serializers.IntegerField()
     date_min_articles_posted = serializers.DateField()
     min_articles_posted = serializers.IntegerField()
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ['user', 'object_id']
