@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'my_auth.apps.MyAuthConfig',
     'news.apps.NewsConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from news.forms.article import ArticleAdminForm
-from news.models import Article, Category, Comment
+from news.models import Article, Category, Comment, Like
 
 
 @admin.register(Article)
@@ -21,4 +21,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
     pass
