@@ -7,9 +7,13 @@ from news.storage import article_image_path
 
 class Category(models.Model):
     name = models.CharField(max_length=20)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = 'Categories'
 
 
 class Article(models.Model):

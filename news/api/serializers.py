@@ -57,3 +57,14 @@ class ArticleSerializer(serializers.ModelSerializer):
         if old_image_name != new_image_name:
             replace_image.send(sender=Article, instance=instance)
         return super().update(instance, validated_data)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+    def create(self, validated_data):
+        category = Category(author_id=self.context['request'].user.id)
+        super().update(category, validated_data)
+        return category
