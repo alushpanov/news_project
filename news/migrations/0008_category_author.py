@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('news', '0007_comments_related_names'),
+        ('news', '0008_like_added'),
     ]
 
     operations = [
