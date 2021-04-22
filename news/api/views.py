@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -32,6 +33,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = news_serializers.CategorySerializer
     permission_classes = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
+
+
+class UserProfileAPIView(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = news_serializers.UserProfileSerializer
+
+    def get_queryset(self):
+        return MyUser.objects.filter(id=self.request.user.id)
 
 
 @api_view(http_method_names=['GET'])

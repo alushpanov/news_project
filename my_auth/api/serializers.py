@@ -64,9 +64,3 @@ class UserRegisterSerializer(UserLoginSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MyUser
-        fields = ['id', 'first_name', 'last_name', 'email']

@@ -11,6 +11,7 @@ router.register(r'comments', api_views.CommentViewSet, 'comment')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('user-profile/<int:pk>/', api_views.UserProfileAPIView.as_view()),
     path('analytics/', api_views.get_analytics),
     path('likes/', api_views.like),
 ]

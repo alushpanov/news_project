@@ -5,6 +5,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from my_auth.models import MyUser
 from news.models import Article, Category, Comment, Like
 from news.signals import replace_image
 
@@ -95,6 +96,12 @@ class CategorySerializer(serializers.ModelSerializer):
         category = Category(author_id=self.context['request'].user.id)
         super().update(category, validated_data)
         return category
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields = ['id', 'first_name', 'last_name', 'email']
 
 
 class AnalyticSerializer(serializers.Serializer):
