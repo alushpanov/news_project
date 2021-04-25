@@ -1,51 +1,30 @@
-import base64
-from binascii import Error as BinASCIIError
+from django.apps import apps
+from django.contrib.contenttypes.models import ContentType
 
-from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from my_auth.models import MyUser
+from news.api.fields import Base64ImageField
 from news.models import Article, Category, Comment, Like
 from news.signals import replace_image
-
-
-class Base64ImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        """
-        It checks for the type of the data and either decodes it from
-        base64 or directly saves the file.
-        """
-
-        data_name = data['name']
-        data_content = data['content']
-        if isinstance(data_content, str):
-            try:
-                decoded_file = base64.b64decode(data_content)
-            except BinASCIIError:
-                raise ValidationError('Corrupted file data, please try again.')
-            data_content = ContentFile(decoded_file, name=f'{data_name}')
-        else:
-            raise ValidationError(
-                '%(value)s is not a valid file format' % type(data_content),
-                code='invalid',
-            )
-        return super().to_internal_value(data_content)
 
 
 class ArticleSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-    num_likes = serializers.IntegerField(default=0)  # annotation is performed in ArticleManager
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in ArticleQuerySet
 
     class Meta:
         model = Article
         fields = ['title', 'text', 'image', 'categories', 'num_likes']
 
     def create(self, validated_data):
-        article = Article(author_id=self.context['request'].user.id)
-        super().update(article, validated_data)
-        article.categories.set(validated_data['categories'])
+        validated_data['author'] = self.context['request'].user
+        validated_data.pop('num_likes')
+        categories = validated_data.pop('categories')
+        article = super().create(validated_data)
+        article.categories.set(categories)
         return article
 
     def validate_categories(self, data):
@@ -54,36 +33,27 @@ class ArticleSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        try:
-            new_image_name = self.context['request'].data['image']['name']
-            old_image_name = instance.image.name.split('/')[-1]
-            if old_image_name != new_image_name:
-                replace_image.send(sender=Article, instance=instance)
-        except KeyError:
-            pass
-        validated_data['num_likes'] = instance.num_likes
+        if 'image' in self.context['request'].data:
+            replace_image.send(sender=Article, instance=instance)
         return super().update(instance, validated_data)
 
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
     article = serializers.PrimaryKeyRelatedField(read_only=True)
-    num_likes = serializers.IntegerField(default=0)  # annotation is performed in CommentManager
+    num_likes = serializers.IntegerField(default=0)  # annotation is performed in CommentQuerySet
 
     class Meta:
         model = Comment
         fields = ['author', 'article', 'text', 'num_likes']
 
     def create(self, validated_data):
-        comment = Comment(
-            author=self.context['request'].user,
-            article_id=self.context['request'].query_params['article_id']
-        )
-        super().update(comment, validated_data)
-        return comment
+        validated_data.pop('num_likes')
+        validated_data['author'] = self.context['request'].user
+        validated_data['article_id'] = self.context['request'].query_params['article_id']
+        return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        validated_data['num_likes'] = instance.num_likes
         return super().update(instance, validated_data)
 
 
@@ -93,9 +63,8 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['name']
 
     def create(self, validated_data):
-        category = Category(author_id=self.context['request'].user.id)
-        super().update(category, validated_data)
-        return category
+        validated_data['author'] = self.context['request'].user
+        return super().create(validated_data)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -121,6 +90,30 @@ class AnalyticSerializer(serializers.Serializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
+    content_type = serializers.HiddenField(default=None)
+
     class Meta:
         model = Like
-        fields = ['user', 'object_id']
+        fields = ['object_id', 'content_type']
+
+    def validate(self, attrs):
+        try:
+            object_type = apps.get_model('news', self.initial_data['object_type'])
+        except LookupError:
+            raise ValidationError('There is no such model')
+
+        if object_type is not Article and object_type is not Comment:
+            raise ValidationError('Only Article or Comment can be liked')
+
+        if not object_type.objects.filter(id=attrs['object_id']).exists():
+            raise ValidationError('There is no such instance')
+
+        attrs['content_type'] = ContentType.objects.get_for_model(object_type)
+        return attrs
+
+    def create(self, validated_data):
+        try:
+            like_to_create = Like.objects.get(**validated_data)
+            return like_to_create
+        except Like.DoesNotExist:
+            return super().create(validated_data)
