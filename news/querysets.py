@@ -1,11 +1,14 @@
-from django.db.models import Manager, Count, Max, Min, Q
+from django.db.models import Manager, Count, Max, Min, Q, QuerySet
 from django.db.models.fields import DateField
 from django.db.models.functions import Cast
 
 
-class ArticleManager(Manager):
+class ArticleQuerySet(QuerySet):
     def get_queryset(self):
-        return super().get_queryset().annotate(num_likes=Count('likes')).filter(archived=False)
+        return super().filter(archived=False)
+
+    def a_num_likes(self):
+        return self.get_queryset().annotate(num_likes=Count('likes'))
 
     def search_query(self, query):
         splitted_query = query.split(' ')
@@ -63,6 +66,9 @@ class ArticleManager(Manager):
             raise ValueError('db is empty')
 
 
-class CommentManager(Manager):
+class CommentQuerySet(QuerySet):
     def get_queryset(self):
-        return super().get_queryset().annotate(num_likes=Count('likes'))
+        return super().all()
+
+    def a_num_likes(self):
+        return self.get_queryset().annotate(num_likes=Count('likes'))
