@@ -2,6 +2,8 @@ from django.db.models import Count, Max, Min, Q, QuerySet
 from django.db.models.fields import DateField
 from django.db.models.functions import Cast
 
+from my_auth.models import MyUser
+
 
 class ArticleQuerySet(QuerySet):
     def get_queryset(self):
@@ -24,8 +26,8 @@ class ArticleQuerySet(QuerySet):
         return self.get_queryset().filter(q).distinct().order_by('-created_at')
 
     def get_most_liked_article(self):
-        max_likes = self.get_queryset().aggregate(Max('likes'))
-        return self.get_queryset().filter(likes=max_likes['likes__max']).first()
+        max_likes = self.a_num_likes().aggregate(Max('num_likes'))
+        return self.a_num_likes().filter(num_likes=max_likes['num_likes__max']).first()
 
     def get_most_commented_article(self):
         qs_comments_counted = self.get_queryset().annotate(comments_count=Count('comments'))
@@ -38,7 +40,7 @@ class ArticleQuerySet(QuerySet):
         return self.get_queryset().filter(views=0).count()
 
     def count_articles_with_no_likes(self):
-        return self.get_queryset().filter(likes=0).count()
+        return self.a_num_likes().filter(num_likes=0).count()
 
     def _get_queryset_with_dates_counted(self):
         qs_dates_counted = self.get_queryset() \
@@ -64,6 +66,25 @@ class ArticleQuerySet(QuerySet):
             return filtered_min_articles[0]  # .first()
         else:
             raise ValueError('db is empty')
+
+    def get_analytics_dict(self):
+        analytics_dict = {
+            'most_liked_article_id': self.get_most_liked_article().id,
+            'most_liked_article_title': self.get_most_liked_article().title,
+            'most_commented_article_id': self.get_most_commented_article().id,
+            'most_commented_article_title': self.get_most_commented_article().title,
+            'author_with_max_comments_fullname': MyUser.objects.get_user_with_max_comments().first_name[:-1]
+                                                 + ' ' + MyUser.objects.get_user_with_max_comments().last_name[:-1],
+            'author_with_max_comments_id': MyUser.objects.get_user_with_max_comments().id,
+            'articles_with_images': self.count_articles_with_images(),
+            'articles_with_no_views': self.count_articles_with_no_views(),
+            'articles_with_no_likes': self.count_articles_with_no_likes(),
+            'date_max_articles_posted': self.get_date_max_articles_posted()['creation_date'],
+            'max_articles_posted': self.get_date_max_articles_posted()['articles_count'],
+            'date_min_articles_posted': self.get_date_min_articles_posted()['creation_date'],
+            'min_articles_posted': self.get_date_min_articles_posted()['articles_count']
+        }
+        return analytics_dict
 
 
 class CommentQuerySet(QuerySet):
