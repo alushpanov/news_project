@@ -8,6 +8,7 @@ from news.api import views as api_views
 router = DefaultRouter()
 router.register(r'articles', api_views.ArticleViewSet, 'article')
 router.register(r'comments', api_views.CommentViewSet, 'comment')
+router.register(r'categories', api_views.CategoryViewSet, 'category')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKe
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from news.managers import ArticleManager, CommentManager
+from news.querysets import ArticleQuerySet, CommentQuerySet
 from news.storage import article_image_path
 
 
@@ -37,7 +37,7 @@ class Article(models.Model):
     likes = GenericRelation(Like)
     views = models.IntegerField(default=0)
 
-    objects = ArticleManager()
+    objects = ArticleQuerySet.as_manager()
     all_objects = models.Manager()
 
     def __str__(self):
@@ -49,4 +49,4 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
     text = models.TextField()
     likes = GenericRelation(Like)
-    objects = CommentManager()
+    objects = CommentQuerySet.as_manager()

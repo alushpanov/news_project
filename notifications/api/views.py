@@ -1,13 +1,9 @@
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView
 
-from notifications.models import Notification
 from notifications.api.serializers import NotificationSerializer
-
-
-class IsReceiver(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return obj.receiver == request.user
+from notifications.models import Notification
+from notifications.permissions import IsReceiver
 
 
 class NotificationsListAPIView(ListAPIView):

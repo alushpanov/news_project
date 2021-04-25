@@ -1,4 +1,4 @@
-from django.db.models import Manager, Count, Max, Min, Q, QuerySet
+from django.db.models import Count, Max, Min, Q, QuerySet
 from django.db.models.fields import DateField
 from django.db.models.functions import Cast
 
