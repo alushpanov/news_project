@@ -34,12 +34,12 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
-    article = serializers.PrimaryKeyRelatedField(read_only=True)
+    article_id = serializers.PrimaryKeyRelatedField(read_only=True)
     num_likes = serializers.IntegerField(default=0)  # annotation is performed in CommentQuerySet
 
     class Meta:
         model = Comment
-        fields = ['author', 'article', 'text', 'num_likes']
+        fields = ['author', 'article_id', 'text', 'num_likes']
 
     def create(self, validated_data):
         validated_data.pop('num_likes')
