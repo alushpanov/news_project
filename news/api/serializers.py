@@ -50,7 +50,7 @@ class CommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('num_likes')
         validated_data['author'] = self.context['request'].user
-        validated_data['article_id'] = self.context['request'].query_params['article_id']
+        validated_data['article_id'] = self.context['request'].data['article_id']
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
