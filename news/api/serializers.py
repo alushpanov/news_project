@@ -7,7 +7,6 @@ from rest_framework.exceptions import ValidationError
 from my_auth.models import MyUser
 from news.api.fields import Base64ImageField
 from news.models import Article, Category, Comment, Like
-from news.signals import replace_image
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -32,11 +31,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             raise ValidationError('No more than 3 categories allowed!')
         return data
 
-    def update(self, instance, validated_data):
-        if 'image' in self.context['request'].data:
-            replace_image.send(sender=Article, instance=instance)
-        return super().update(instance, validated_data)
-
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -52,9 +46,6 @@ class CommentSerializer(serializers.ModelSerializer):
         validated_data['author'] = self.context['request'].user
         validated_data['article_id'] = self.context['request'].data['article_id']
         return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -102,7 +93,7 @@ class LikeSerializer(serializers.ModelSerializer):
         except LookupError:
             raise ValidationError('There is no such model')
 
-        if object_type is not Article and object_type is not Comment:
+        if object_type not in [Article, Comment]:
             raise ValidationError('Only Article or Comment can be liked')
 
         if not object_type.objects.filter(id=attrs['object_id']).exists():

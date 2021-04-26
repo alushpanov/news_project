@@ -1,8 +1,8 @@
 import os
 
 from django.conf import settings
-from django.db.models.signals import post_delete, post_save
-from django.dispatch import Signal, receiver
+from django.db.models.signals import post_delete, post_save, pre_save
+from django.dispatch import receiver
 
 from news.models import Article, Comment, Like
 from notifications.services import create_notification
@@ -14,8 +14,12 @@ def remove_image(sender, instance, **kwargs):
         os.remove(os.path.join(settings.MEDIA_ROOT, instance.image.path))
 
 
-replace_image = Signal()
-replace_image.connect(remove_image)
+@receiver(pre_save, sender=Article)
+def replace_image(sender, instance, **kwargs):
+    old_article = Article.objects.filter(id=instance.id).first()
+    if old_article:
+        if old_article.image and old_article.image != instance.image:
+            os.remove(os.path.join(settings.MEDIA_ROOT, old_article.image.path))
 
 
 @receiver(post_save, sender=Like)
