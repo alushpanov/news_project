@@ -4,3 +4,4 @@ django-allauth==0.44.0
 python-dotenv==0.15.0
 django-bootstrap4==2.3.1
 djangorestframework==3.12.4
+django_filter==2.4.0
