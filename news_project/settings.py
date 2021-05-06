@@ -199,3 +199,5 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
 }
+
+CELERY_BROKER_URL = 'amqp://guest:guest@0.0.0.0:5672'
