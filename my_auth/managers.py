@@ -1,3 +1,5 @@
+from random import randint
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Max, Count
 from django.utils.translation import ugettext_lazy as _
@@ -37,3 +39,7 @@ class CustomUserManager(BaseUserManager):
     def get_user_with_max_comments(self):
         qs_comments_counted = self.get_queryset().annotate(comments_count=Count('comments'))
         return qs_comments_counted.order_by('comments_count').last()
+
+    def random(self):
+        random_index = randint(0, self.count() - 1)
+        return self.all()[random_index]
