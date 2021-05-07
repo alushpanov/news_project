@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 
 load_dotenv()
@@ -201,3 +202,10 @@ REST_FRAMEWORK = {
 }
 
 CELERY_BROKER_URL = 'amqp://guest:guest@0.0.0.0:5672'
+
+CELERY_BEAT_SCHEDULE = {
+    'generate-random-articles': {
+        'task': 'notifications.tasks.generate_random_articles',
+        'schedule': crontab(minute=0, hour='*/2'),
+    },
+}
