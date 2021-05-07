@@ -3,6 +3,7 @@ from random import randint
 
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
+from django.core.mail import send_mail
 
 from my_auth.models import MyUser
 from news.models import Article, Category, Like
@@ -48,3 +49,20 @@ def generate_random_articles():
             )
             bulk_likes.append(like)
     Like.objects.bulk_create(bulk_likes)
+
+
+@celery_app.task
+def send_emails_with_latest_news():
+    latest_articles = Article.objects.get_articles_for_24_hours().order_by('-num_likes', '-views')
+    three_most_popular = latest_articles[:3]
+    msg = 'Amount of articles published within 24 hours: {}\n' \
+          'Check out the most popular ones:\n'\
+        .format(latest_articles.count())
+
+    send_mail(
+        'LATEST NEWS!',
+        msg,
+        'alice1@m.ru',
+        ['a.lushpanov@wis.software'],
+        fail_silently=False,
+    )

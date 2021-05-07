@@ -1,3 +1,5 @@
+import datetime
+
 from django.db.models import Count, Max, Min, Q, QuerySet
 from django.db.models.fields import DateField
 from django.db.models.functions import Cast
@@ -85,6 +87,10 @@ class ArticleQuerySet(QuerySet):
             'min_articles_posted': self.get_date_min_articles_posted()['articles_count']
         }
         return analytics_dict
+
+    def get_articles_for_24_hours(self):
+        day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
+        return self.a_num_likes().filter(created_at__gte=day_ago)
 
 
 class CommentQuerySet(QuerySet):
