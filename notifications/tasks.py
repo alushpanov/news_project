@@ -29,28 +29,22 @@ def generate_random_articles():
         author=MyUser.objects.get(is_staff=True),
     )
 
-    bulk_articles = []
+    bulk_likes = []
     for i in range(amount_of_articles):
-        article = Article(
+        article = Article.objects.create(
             title=str(time.time()),
             text='Text of automatically generated article',
             author=MyUser.objects.random(),
             views=randint(0, 2000),
         )
-        bulk_articles.append(article)
-    Article.objects.bulk_create(bulk_articles)
-
-    generated_articles = Article.objects.all().order_by('-created_at')[:amount_of_articles]
-    for article in generated_articles:
         article.categories.set([category_for_generated.id])
 
         num_likes = randint(0, 20)
-        bulk_likes = []
-        for i in range(num_likes):
+        for j in range(num_likes):
             like = Like(
                 user=MyUser.objects.random(),
                 content_type=ContentType.objects.get_for_model(Article),
                 object_id=article.id,
             )
             bulk_likes.append(like)
-        Like.objects.bulk_create(bulk_likes)
+    Like.objects.bulk_create(bulk_likes)
