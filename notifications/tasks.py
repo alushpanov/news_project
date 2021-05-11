@@ -67,10 +67,11 @@ def send_emails_with_latest_news():
           '{}'\
         .format(latest_articles.count(), three_most_popular_urls)
 
+    latest_articles_subscribers = MyUser.objects.latest_articles_subscribers()
     send_mail(
         'LATEST NEWS!',
         msg,
-        'alice1@m.ru',
-        ['a.lushpanov@wis.software'],
+        None,
+        latest_articles_subscribers,
         fail_silently=False,
     )
