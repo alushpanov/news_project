@@ -204,18 +204,16 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = 'amqp://guest:guest@0.0.0.0:5672'
 
 CELERY_BEAT_SCHEDULE = {
-    # 'generate-random-articles': {
-    #     'task': 'notifications.tasks.generate_random_articles',
-    #     'schedule': crontab(minute=0, hour='*/2'),
-    # },
+    'generate-random-articles': {
+        'task': 'notifications.tasks.generate_random_articles',
+        'schedule': crontab(minute=0, hour='*/2'),
+    },
     'send-emails-with-latest-news': {
         'task': 'notifications.tasks.send_emails_with_latest_news',
-        # 'schedule': crontab(minute=0, hour='*/2'),
-        'schedule': 10.0,
+        'schedule': crontab(minute=0, hour=7),
     },
 }
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = '0.0.0.0'
 EMAIL_PORT = 25
