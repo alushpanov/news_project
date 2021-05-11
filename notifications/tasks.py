@@ -3,7 +3,9 @@ from random import randint
 
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.urls import reverse
 
 from my_auth.models import MyUser
 from news.models import Article, Category, Like
@@ -55,9 +57,15 @@ def generate_random_articles():
 def send_emails_with_latest_news():
     latest_articles = Article.objects.get_articles_for_24_hours().order_by('-num_likes', '-views')
     three_most_popular = latest_articles[:3]
+    domain = Site.objects.get_current().domain
+    three_most_popular_urls = '\n'.join(
+        [domain + reverse('article-detail', args=(k.id,)) for k in three_most_popular]
+    )
+
     msg = 'Amount of articles published within 24 hours: {}\n' \
-          'Check out the most popular ones:\n'\
-        .format(latest_articles.count())
+          'Check out the most popular ones:\n' \
+          '{}'\
+        .format(latest_articles.count(), three_most_popular_urls)
 
     send_mail(
         'LATEST NEWS!',
