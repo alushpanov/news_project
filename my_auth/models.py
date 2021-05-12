@@ -1,5 +1,7 @@
 import uuid
+
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 from my_auth.managers import CustomUserManager
@@ -17,3 +19,8 @@ class MyUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Subscription(models.Model):
+    latest_articles = models.BooleanField(default=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

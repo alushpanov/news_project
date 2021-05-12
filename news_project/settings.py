@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 
 load_dotenv()
@@ -201,3 +202,22 @@ REST_FRAMEWORK = {
 }
 
 CELERY_BROKER_URL = 'amqp://guest:guest@0.0.0.0:5672'
+
+CELERY_BEAT_SCHEDULE = {
+    'generate-random-articles': {
+        'task': 'notifications.tasks.generate_random_articles',
+        'schedule': crontab(minute=0, hour='*/2'),
+    },
+    'send-emails-with-latest-news': {
+        'task': 'notifications.tasks.send_emails_with_latest_news',
+        'schedule': crontab(minute=0, hour=7),
+    },
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'default@m.ru'
