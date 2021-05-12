@@ -45,4 +45,4 @@ class CustomUserManager(BaseUserManager):
         return self.all()[random_index]
 
     def latest_articles_subscribers(self):
-        return self.filter(subscriptions__latest_articles=True)
+        return self.filter(subscription__latest_articles=True)

@@ -21,9 +21,6 @@ class MyUser(AbstractUser):
         return self.email
 
 
-class Subscriptions(models.Model):
+class Subscription(models.Model):
     latest_articles = models.BooleanField(default=False)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='subscriptions')
-
-    class Meta:
-        verbose_name_plural = 'subscriptions'
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

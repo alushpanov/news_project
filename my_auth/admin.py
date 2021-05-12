@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from my_auth.models import MyUser, Subscriptions
+from my_auth.models import MyUser, Subscription
 
 
 @admin.register(MyUser)
@@ -33,6 +33,6 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ('email',)
 
 
-@admin.register(Subscriptions)
-class SubscriptionsAdmin(admin.ModelAdmin):
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
     pass
