@@ -55,7 +55,7 @@ def generate_random_articles():
 
 @celery_app.task
 def send_emails_with_latest_news():
-    latest_articles = Article.objects.get_articles_for_24_hours().order_by('-num_likes', '-views')
+    latest_articles = Article.objects.get_articles_for_24_hours().a_num_likes().order_by('-num_likes', '-views')
     three_most_popular = latest_articles[:3]
     domain = Site.objects.get_current().domain
     three_most_popular_urls = '\n'.join(

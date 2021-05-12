@@ -90,7 +90,7 @@ class ArticleQuerySet(QuerySet):
 
     def get_articles_for_24_hours(self):
         day_ago = datetime.datetime.now() - datetime.timedelta(days=1)
-        return self.a_num_likes().filter(created_at__gte=day_ago)
+        return self.filter(created_at__gte=day_ago)
 
 
 class CommentQuerySet(QuerySet):
