@@ -29,7 +29,7 @@ def generate_random_articles():
 
     category_for_generated, created = Category.objects.get_or_create(
         name='generated article',
-        author=MyUser.objects.get(is_staff=True),
+        defaults={'author': MyUser.objects.random()}
     )
 
     bulk_likes = []
