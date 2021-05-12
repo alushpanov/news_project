@@ -32,6 +32,7 @@ def generate_random_articles():
         defaults={'author': MyUser.objects.random()}
     )
 
+    article_content_type = ContentType.objects.get_for_model(Article)
     bulk_likes = []
     for i in range(amount_of_articles):
         article = Article.objects.create(
@@ -46,7 +47,7 @@ def generate_random_articles():
         for j in range(num_likes):
             like = Like(
                 user=MyUser.objects.random(),
-                content_type=ContentType.objects.get_for_model(Article),
+                content_type=article_content_type,
                 object_id=article.id,
             )
             bulk_likes.append(like)
@@ -67,7 +68,7 @@ def send_emails_with_latest_news():
           '{}'\
         .format(latest_articles.count(), three_most_popular_urls)
 
-    latest_articles_subscribers = MyUser.objects.latest_articles_subscribers()
+    latest_articles_subscribers = MyUser.objects.get_subscribers(subscription__latest_articles=True)
     send_mail(
         'LATEST NEWS!',
         msg,

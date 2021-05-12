@@ -1,7 +1,7 @@
 from random import randint
 
-from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Count
+from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -44,5 +44,5 @@ class CustomUserManager(BaseUserManager):
         random_index = randint(0, self.count() - 1)
         return self.all()[random_index]
 
-    def latest_articles_subscribers(self):
-        return self.filter(subscription__latest_articles=True)
+    def get_subscribers(self, **subscription_lookup):
+        return self.filter(**subscription_lookup)
