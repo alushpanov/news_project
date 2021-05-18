@@ -5,3 +5,4 @@ media/
 .env
 amount_of_unauthorized_requests.txt
 celerybeat-schedule.*
+static/
