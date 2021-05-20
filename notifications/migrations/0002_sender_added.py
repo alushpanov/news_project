@@ -29,7 +29,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='notification',
             name='receiver',
-            field=models.ForeignKey(default=MyUser.objects.get(is_staff=True).id, on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to='my_auth.myuser'),
+            field=models.ForeignKey(
+                default=MyUser.objects.get(is_staff=True).id,  # replace with 'null=True' before setting up a new db
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='notifications',
+                to='my_auth.myuser'
+            ),
             preserve_default=False,
         ),
         migrations.AddField(

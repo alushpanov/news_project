@@ -18,7 +18,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='category',
             name='author',
-            field=models.ForeignKey(default=MyUser.objects.get(is_staff=True).id, on_delete=django.db.models.deletion.CASCADE, to='my_auth.myuser'),
+            field=models.ForeignKey(
+                default=MyUser.objects.get(is_staff=True).id,  # replace with 'null=True' before setting up a new db
+                on_delete=django.db.models.deletion.CASCADE,
+                to='my_auth.myuser'
+            ),
             preserve_default=False,
         ),
     ]
