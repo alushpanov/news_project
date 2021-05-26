@@ -33,7 +33,7 @@ SECRET_KEY = '2*crw#+h$^575$=3*a96#p+)fs6#ykiy+$&zb2x&q#3drefj0u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -97,11 +97,11 @@ WSGI_APPLICATION = 'news_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'psql_db',
+        'NAME': os.getenv('PSQL_NAME'),
         'USER': os.getenv('PSQL_USER'),
         'PASSWORD': os.getenv('PSQL_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': os.getenv('PSQL_HOST'),
+        'PORT': os.getenv('PSQL_PORT')
     }
 }
 
@@ -206,7 +206,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-CELERY_BROKER_URL = 'amqp://guest:guest@0.0.0.0:5672'
+CELERY_BROKER_URL = 'amqp://guest:guest@news_project_rabbitmq_1:5672'
 
 CELERY_BEAT_SCHEDULE = {
     'generate-random-articles': {

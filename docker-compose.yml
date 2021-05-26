@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  web:
+    build:
+      context: ../news_project
+      dockerfile: Dockerfile
+    command: gunicorn --bind 0.0.0.0:8000 news_project.wsgi:application
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - static_volume:${STATIC_VOLUME_PATH}
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:${PSQL_STORAGE}
+    environment:
+      - POSTGRES_USER=${PSQL_USER}
+      - POSTGRES_PASSWORD=${PSQL_PASSWORD}
+      - POSTGRES_DB=${PSQL_NAME}
+      - PGUSER=${PSQL_USER}
+  nginx:
+    build: ./nginx
+    volumes:
+    - static_volume:${STATIC_VOLUME_PATH}
+    ports:
+      - 80:8001
+    depends_on:
+      - web
+  rabbitmq:
+    image: rabbitmq
+    command: rabbitmq-server
+  celery-beat:
+    image: news_project_web
+    command: celery -A news_project worker -B -l debug
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
