@@ -5,4 +5,4 @@ class MyAuthConfig(AppConfig):
     name = 'my_auth'
 
     def ready(self):
-        import news.signals
+        import my_auth.signals

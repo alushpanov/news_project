@@ -20,6 +20,6 @@ class RegisterAuthToken(ObtainAuthToken, CreateModelMixin):
         create_response = super().create(request, *args, **kwargs)
         email = create_response.data.get('email')
         user = MyUser.objects.get(email=email)
-        token, created = Token.objects.get_or_create(user=user)
+        token = Token.objects.get(user=user)
         django_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return Response({'token': token.key})
