@@ -14,7 +14,7 @@ class IndexView(generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Article.objects.all().order_by('-created_at')
+        return Article.objects.a_num_likes().order_by('-created_at')
 
 
 @method_decorator(login_required, name='dispatch')
