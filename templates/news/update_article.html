@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 
 {% block edit %}
-<form enctype="multipart/form-data" action="/mynews/{{ form.instance.pk }}/" method="post" class="form">
+<form enctype="multipart/form-data" action="/news/mynews/{{ form.instance.pk }}/" method="post" class="form">
     {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}

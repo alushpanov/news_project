@@ -40,10 +40,14 @@ def create_article(request):
     return render(request, 'news/create_article.html', {'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class ArticleUpdateView(generic.UpdateView):
     model = Article
     template_name = 'news/update_article.html'
     form_class = ArticleForm
+
+    def get_queryset(self):
+        return Article.objects.filter(author=self.request.user)
 
     def get_success_url(self):
         return reverse('news:user_articles')
