@@ -1,15 +1,21 @@
 from django.contrib import admin
 from django.db.models import Count
 
+from admin_numeric_filter.admin import NumericFilterModelAdmin, RangeNumericFilter
+
 from news.forms.article import ArticleAdminForm
 from news.models import Article, Category, Comment, Like
 
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(NumericFilterModelAdmin):
     form = ArticleAdminForm
-    list_display = ('title', 'author', 'num_likes', 'archived')
-    list_filter = ('author', )
+    list_display = ('title', 'author', 'num_likes', 'views', 'archived',)
+    list_filter = (
+        'author',
+        'categories',
+        ('views', RangeNumericFilter),
+    )
     readonly_fields = ('created_at', )
 
     def get_queryset(self, request):

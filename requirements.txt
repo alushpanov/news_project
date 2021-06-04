@@ -7,3 +7,4 @@ djangorestframework==3.12.4
 django_filter==2.4.0
 celery==5.0.5
 psycopg2-binary==2.8.6
+django-admin-numeric-filter==0.1.6
